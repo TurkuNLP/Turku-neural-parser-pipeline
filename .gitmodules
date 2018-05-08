@@ -1,0 +1,3 @@
+[submodule "Parser-v2"]
+	path = Parser-v2
+	url = https://github.com/fginter/Parser-v2.git
