@@ -31,4 +31,4 @@ argparser.add_argument('--parser-dir', default="Parser-v2", help='Parser. Defaul
 
 if __name__=="__main__":
     args=argparser.parse_args()
-    launch(args)
+    launch(args,None)
