@@ -3,6 +3,7 @@ from multiprocessing import Process
 
 import tokenizer_server as tok_serv
 import parser_server as parse_serv
+import lemmatizer_server as lemma_serv
 
 import requests
 
@@ -20,6 +21,10 @@ if __name__=="__main__":
     parse_process=Process(target=parse_serv.launch,args=(parse_args,parse_serv.ParserHTTPDummyHandler))
     parse_process.start()
 
+    lemma_args=lemma_serv.argparser.parse_args(["--port", "34592", "--model", "models/lemmatizer.pt"])
+    lemma_process=Process(target=lemma_serv.launch,args=(lemma_args,))
+    lemma_process.start()
+
     while True:
         txt=input("ws-text> ")
         r_tok=requests.post("http://127.0.0.1:34589",data=txt.strip().encode("utf-8"))
@@ -28,6 +33,8 @@ if __name__=="__main__":
         tagged=r_tag.text
         r_parse=requests.post("http://127.0.0.1:34591",data=tagged.encode("utf-8"))
         parsed=r_parse.text
-        print(parsed,end="")
+        r_lemma=requests.post("http://127.0.0.1:34592",data=parsed.encode("utf-8"))
+        lemmatized=r_lemma.text
+        print(lemmatized,end="")
 
         
