@@ -32,22 +32,10 @@ class TokenizerWrapper():
         conllu=buff.getvalue()
         return conllu
 
-def launch(args):
+def launch(args,q_in,q_out):
     t=TokenizerWrapper()
-    TokenizerHTTPDummyHandler.parser=t #set this as a class attribute
-    httpd = http.server.HTTPServer(("",args.port), TokenizerHTTPDummyHandler)
-    httpd.serve_forever()
+    while True:
+        txt=q_in.recv()
+        q_out.send(t.parse_text(txt))
     
 argparser = argparse.ArgumentParser(description='Tokenize text')
-argparser.add_argument('--port', metavar='TCP port', type=int, default=32786, help='port')
-
-
-if __name__ == '__main__':
-    args=parser.parse_args()
-    launch(args)
-    
-
-    # pw.parse_text("Minulla on koira")
-    # pw.parse_text("Minulla on kissakin")
-    # pw.parse_text("Minulla on kissakin\nJa toinen lause")
-    # app.run(debug=False, port=5957, use_reloader=False)
