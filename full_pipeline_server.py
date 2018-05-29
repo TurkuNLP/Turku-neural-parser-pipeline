@@ -19,11 +19,11 @@ if __name__=="__main__":
     tok_process=Process(target=tok_serv.launch,args=(tok_args,tok_in,tok_out))
     tok_process.start()
 
-    tag_args=parse_serv.argparser.parse_args(["--model","/usr/share/ParseBank/TinyFinnish-Stanford-model/Finnish-Tagger"])
+    tag_args=parse_serv.argparser.parse_args(["--model","models/Finnish-Tagger"])
     tag_process=Process(target=parse_serv.launch,args=(tag_args,tag_in,tag_out))
     tag_process.start()
    
-    parse_args=parse_serv.argparser.parse_args(["--model","/usr/share/ParseBank/TinyFinnish-Stanford-model/Finnish-Parser"])
+    parse_args=parse_serv.argparser.parse_args(["--model","models/Finnish-Parser", "--process_morpho"])
     parse_process=Process(target=parse_serv.launch,args=(parse_args,parse_in,parse_out))
     parse_process.start()
 
