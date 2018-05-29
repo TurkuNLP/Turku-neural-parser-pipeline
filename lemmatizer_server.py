@@ -31,8 +31,8 @@ class LemmatizerWrapper():
 def launch(args,q_in,q_out):
     lemmatizer=LemmatizerWrapper(args)
     while True:
-        txt=q_in.recv()
-        q_out.send(lemmatizer.parse_text(txt))
+        txt=q_in.get()
+        q_out.put(lemmatizer.parse_text(txt))
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
 argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help='Model')

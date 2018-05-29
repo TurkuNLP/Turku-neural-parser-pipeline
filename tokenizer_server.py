@@ -1,17 +1,6 @@
-import os.path
 import sys
-import hashlib
 import io
-import parser_lib
-import http.server
-import urllib
-import dummy_handler
 import argparse
-
-class TokenizerHTTPDummyHandler(dummy_handler.DummyHandler):
-
-    pass
-
 
 class TokenizerWrapper():
 
@@ -35,7 +24,7 @@ class TokenizerWrapper():
 def launch(args,q_in,q_out):
     t=TokenizerWrapper()
     while True:
-        txt=q_in.recv()
-        q_out.send(t.parse_text(txt))
+        txt=q_in.get()
+        q_out.put(t.parse_text(txt))
     
 argparser = argparse.ArgumentParser(description='Tokenize text')

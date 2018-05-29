@@ -1,39 +1,38 @@
-import os
-from multiprocessing import Process,Pipe
+from multiprocessing import Process,Queue
+import importlib
 
-import tokenizer_server as tok_serv
-import parser_server as parse_serv
-import lemmatizer_server as lemma_serv
+pipelines={"fi_tdt_all":[
+    ("tokenizer_server",[]),
+    ("parser_server",["--model","models/Finnish-Tagger"]),
+    ("parser_server",["--model","models/Finnish-Parser","--process_morpho"]),
+    ("lemmatizer_server",["--model", "models/lemmatizer.pt"])]
+}
 
-import requests
+class Pipeline:
 
-if __name__=="__main__":
-    #Start the servers
-    tok_in,pipe_in=Pipe(duplex=False) #receive,send is the order of Pipe()
-    tag_in,tok_out=Pipe(duplex=False)
-    parse_in,tag_out=Pipe(duplex=False)
-    lemma_in,parse_out=Pipe(duplex=False)
-    pipe_out,lemma_out=Pipe(duplex=False)
+    def add_step(self,module_name,params):
+        mod=importlib.import_module(module_name)
+        step_in=self.q_out
+        self.q_out=Queue(self.max_q_size) #new pipeline end
+        args=mod.argparser.parse_args(params)
+        process=Process(target=mod.launch,args=(args,step_in,self.q_out))
+        process.start()
     
-    tok_args=tok_serv.argparser.parse_args([])
-    tok_process=Process(target=tok_serv.launch,args=(tok_args,tok_in,tok_out))
-    tok_process.start()
+    def __init__(self,steps):
+        """ """
+        self.max_q_size=10
+        self.q_in=Queue(self.max_q_size) #where to send data to the whole pipeline
+        self.q_out=self.q_in #where to receive data from the whole pipeline
 
-    tag_args=parse_serv.argparser.parse_args(["--model","models/Finnish-Tagger"])
-    tag_process=Process(target=parse_serv.launch,args=(tag_args,tag_in,tag_out))
-    tag_process.start()
-   
-    parse_args=parse_serv.argparser.parse_args(["--model","models/Finnish-Parser", "--process_morpho"])
-    parse_process=Process(target=parse_serv.launch,args=(parse_args,parse_in,parse_out))
-    parse_process.start()
-
-    lemma_args=lemma_serv.argparser.parse_args(["--model", "models/lemmatizer.pt"])
-    lemma_process=Process(target=lemma_serv.launch,args=(lemma_args,lemma_in,lemma_out))
-    lemma_process.start()
+        for mod_name, params in steps:
+            self.add_step(mod_name,params)
+        
+if __name__=="__main__":
+    p=Pipeline(steps=pipelines["fi_tdt_all"])
 
     while True:
         txt=input("ws-text> ")
-        pipe_in.send(txt)
-        processed=pipe_out.recv()
+        p.q_in.put(txt)
+        processed=p.q_out.get()
         print(processed,end="")
         
