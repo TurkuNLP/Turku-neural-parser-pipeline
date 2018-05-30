@@ -4,3 +4,6 @@ fi_tdt_all:
   - parser_server --model models/Finnish-Parser --process_morpho
   - lemmatizer_server --model models/lemmatizer.pt
 
+tokenize:
+  - tokenizer_server
+  

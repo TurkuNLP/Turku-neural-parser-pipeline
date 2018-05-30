@@ -24,7 +24,7 @@ class TokenizerWrapper():
 def launch(args,q_in,q_out):
     t=TokenizerWrapper()
     while True:
-        txt=q_in.get()
-        q_out.put(t.parse_text(txt))
+        jobid,txt=q_in.get()
+        q_out.put((jobid,t.parse_text(txt)))
     
 argparser = argparse.ArgumentParser(description='Tokenize text')
