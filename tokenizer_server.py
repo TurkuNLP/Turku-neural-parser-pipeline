@@ -63,6 +63,10 @@ def data_matrix_to_conllu(x, y, vocab, f=sys.stdout):
                 write_conllu(current_sent,f)
                 current_sent = []
                 cntr = 1
+    else:
+        if current_sent:
+            write_conllu(current_sent,f)
+            
 def make_data_matrix(x, width = 150, vocab=None):
 
     x_strides = []
@@ -131,8 +135,8 @@ class TokenizerWrapper():
 def launch(args,q_in,q_out):
     t=TokenizerWrapper(args)
     while True:
-        txt=q_in.get()
-        q_out.put(t.parse_text(txt))
+        jobid,txt=q_in.get()
+        q_out.put((jobid,t.parse_text(txt)))
     
 argparser = argparse.ArgumentParser(description='Tokenize text')
 argparser.add_argument("--model", help="model file")
