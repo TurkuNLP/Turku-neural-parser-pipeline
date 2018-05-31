@@ -51,11 +51,15 @@ class Pipeline:
             self.add_step(mod_name_and_params)
 
 
-
 @app.route("/",methods=["GET"])
-def parse():
-    global p
+def parse_get():
+    global b
     txt=flask.request.args.get("text")
+    res=parse(txt,p)
+    return flask.Response(res,mimetype="text/plain; charset=utf-8")
+
+
+def parse(txt,p):
     job_id=p.put(txt)
     while True:
         res=p.get(job_id)
@@ -63,14 +67,16 @@ def parse():
             time.sleep(0.1)
         else:
             break
-    return flask.Response(res,mimetype="text/plain; charset=utf-8")
-            
+    return res
+    
+
 if __name__=="__main__":
     import argparse
     THISDIR=os.path.dirname(os.path.abspath(__file__))
     argparser = argparse.ArgumentParser(description='Parser pipeline')
     argparser.add_argument('--conf-yaml', default=os.path.join(THISDIR,"pipelines.yaml"), help='YAML with pipeline configs. Default: parser_dir/pipelines.yaml')
     argparser.add_argument('--pipeline', default="fi_tdt_all", help='Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
+    argparser.add_argument('ACTION', default="serve", help='`serve` to open http server, `interactive` goes interactive mode. Default: %(default)s')
     args = argparser.parse_args()
 
     with open(args.conf_yaml) as f:
@@ -78,5 +84,16 @@ if __name__=="__main__":
     
     p=Pipeline(steps=pipelines[args.pipeline])
 
-    app.run(host="localhost",port=7689,threaded=True,processes=1,use_reloader=False)
+    if args.ACTION=="serve":
+        app.run(host="localhost",port=7689,threaded=True,processes=1,use_reloader=False)
+    elif args.ACTION=="interactive":
+        try:
+            import readline
+        except:
+            pass
+        while True:
+            txt=input("> ")
+            print(parse(txt,p),end="")
+            
+            
         
