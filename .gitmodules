@@ -4,3 +4,6 @@
 [submodule "universal-lemmatizer"]
 	path = universal-lemmatizer
 	url = https://github.com/jmnybl/universal-lemmatizer.git
+[submodule "tokenizer"]
+	path = tokenizer
+	url = git@github.com:mjluot/tokenizer.git
