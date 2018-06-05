@@ -1,4 +1,4 @@
-from full_pipeline_server import Pipeline
+from pipelin import Pipeline
 import sys
 import select
 import threading
