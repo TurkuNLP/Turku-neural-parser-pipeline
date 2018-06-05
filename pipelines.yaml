@@ -1,5 +1,5 @@
 fi_tdt_all:
-  - tokenizer_server --model models/tokenizer_model --vocab models/tokenizer_vocab.pickle
+  - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
   - parser_server --model models/Finnish-Tagger
   - parser_server --model models/Finnish-Parser --process_morpho
   - lemmatizer_server --model models/lemmatizer.pt
