@@ -1,0 +1,10 @@
+wheel
+tensorflow
+keras
+h5py
+matplotlib
+flask
+
+#pytorch
+#torchvision
+#torchtext
