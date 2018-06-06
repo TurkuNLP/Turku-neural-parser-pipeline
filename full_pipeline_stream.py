@@ -45,9 +45,7 @@ def non_blocking_batch(inp,timeout=0.2,batch_lines=10000,wait_for_empty_line=Fal
 def blocking_batch(inp,batch_lines=10000,wait_for_empty_line=False):
     line_buffer=[]
     while True:
-        print("Waiting for next line",file=sys.stderr,flush=True)
         line=inp.readline()
-        print("Line",repr(line),file=sys.stderr,flush=True)
         if not line: #EOF
             if line_buffer:
                 print("Yielding on EOF",file=sys.stderr,flush=True)
@@ -59,6 +57,27 @@ def blocking_batch(inp,batch_lines=10000,wait_for_empty_line=False):
             print("Yielding",file=sys.stderr,flush=True)
             yield "".join(line_buffer)
             line_buffer=[]
+
+def input_thread(p,args):
+    if args.blocking_read:
+        fname=args.blocking_read
+        print("Blocking batches from",fname,file=sys.stderr,flush=True)
+        if fname.endswith(".gz"):
+            f=gzip.open(fname,"rt")
+        else:
+            f=open(fname)
+        print("Preparing blocking batches",fname,f,file=sys.stderr,flush=True)
+        batches=blocking_batch(f,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
+        print("Starting input batching (blocking)...",batches,file=sys.stderr,flush=True)
+    else:
+        print("Preparing nonblocking batches",fname,f,file=sys.stderr,flush=True)
+        batches=non_blocking_batch(sys.stdin,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
+        print("Starting input batching (non-blocking)...",file=sys.stderr,flush=True)
+    for batch in batches:
+        print("\n\nSubmitting a batch of ",batch.count("\n"),"lines\n\n",file=sys.stderr,flush=True)
+        p.put(batch)
+    p.input_finished=True
+
 
 def output_thread(p,out,verbose=False):
     started=time.time()
@@ -103,27 +122,12 @@ if __name__=="__main__":
     outp_t=threading.Thread(target=output_thread,args=(p,sys.stdout,True))
     outp_t.start()
     
-    time.sleep(3)
+    inp_t=threading.Thread(target=input_thread,args=(p,args))
+    inp_t.start()
 
-    if args.blocking_read:
-        fname=args.blocking_read
-        print("Blocking batches from",fname,file=sys.stderr,flush=True)
-        if fname.endswith(".gz"):
-            f=gzip.open(fname,"rt")
-        else:
-            f=open(fname)
-        print("Preparing blocking batches",fname,f,file=sys.stderr,flush=True)
-        batches=blocking_batch(f,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
-        print("Starting input batching (blocking)...",batches,file=sys.stderr,flush=True)
-    else:
-        print("Preparing nonblocking batches",fname,f,file=sys.stderr,flush=True)
-        batches=non_blocking_batch(sys.stdin,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
-        print("Starting input batching (non-blocking)...",file=sys.stderr,flush=True)
-    for batch in batches:
-        print("\n\nSubmitting a batch of ",batch.count("\n"),"lines\n\n",file=sys.stderr,flush=True)
-        p.put(batch)
-        assert outp_t.is_alive()
-    p.input_finished=True
+    time.sleep(3)
+    
+    inp_t.join()
     outp_t.join() #wait till output done
 
     #...and we're done
