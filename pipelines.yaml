@@ -1,3 +1,6 @@
+debug:
+  - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
+
 fi_tdt_all:
   - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
   - parser_server --model models/Finnish-Tagger
@@ -9,10 +12,14 @@ fi_tdt_nolem:
   - parser_server --model models/Finnish-Tagger
   - parser_server --model models/Finnish-Parser 
 
-
 fi_tdt_notok_nolem:
   - parser_server --model models/Finnish-Tagger
   - parser_server --model models/Finnish-Parser --process_morpho
+
+fi_tdt_notok_nolem_csc:
+  - parser_server --model /wrk/jmnybl/UD_Finnish-TDT-v2.2-model/Finnish-TDT-Tagger
+  - parser_server --model /wrk/jmnybl/UD_Finnish-TDT-v2.2-model/Finnish-TDT-Parser --process_morpho
+  - desperate_server
 
 fi_tdt_notok:
   - parser_server --model models/Finnish-Tagger

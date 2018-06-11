@@ -1,7 +1,6 @@
 from pipeline import Pipeline
 import sys
 import select
-import threading
 import os
 import yaml
 import time
@@ -42,63 +41,6 @@ def non_blocking_batch(inp,timeout=0.2,batch_lines=10000,wait_for_empty_line=Fal
             yield "".join(line_buffer) #got enough
             line_buffer=[]
 
-def blocking_batch(inp,batch_lines=10000,wait_for_empty_line=False):
-    line_buffer=[]
-    while True:
-        line=inp.readline()
-        if not line: #EOF
-            if line_buffer:
-                print("Yielding on EOF",file=sys.stderr,flush=True)
-                yield "".join(line_buffer)
-            print("Done batching",file=sys.stderr,flush=True)
-            return
-        line_buffer.append(line)
-        if (line.strip()=="" or not wait_for_empty_line) and len(line_buffer)>batch_lines:
-            print("Yielding",file=sys.stderr,flush=True)
-            yield "".join(line_buffer)
-            line_buffer=[]
-
-def input_thread(p,args):
-    if args.blocking_read:
-        fname=args.blocking_read
-        print("Blocking batches from",fname,file=sys.stderr,flush=True)
-        if fname.endswith(".gz"):
-            f=gzip.open(fname,"rt")
-        else:
-            f=open(fname)
-        print("Preparing blocking batches",fname,f,file=sys.stderr,flush=True)
-        batches=blocking_batch(f,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
-        print("Starting input batching (blocking)...",batches,file=sys.stderr,flush=True)
-    else:
-        print("Preparing nonblocking batches",fname,f,file=sys.stderr,flush=True)
-        batches=non_blocking_batch(sys.stdin,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
-        print("Starting input batching (non-blocking)...",file=sys.stderr,flush=True)
-    for batch in batches:
-        print("\n\nSubmitting a batch of ",batch.count("\n"),"lines\n\n",file=sys.stderr,flush=True)
-        p.put(batch)
-    p.input_finished=True
-
-
-def output_thread(p,out,verbose=False):
-    started=time.time()
-    next_report=started+5.0
-    total_trees_parsed=0
-    while True:
-        parsed=p.get(None)
-        if verbose:
-            tree_count=sum(1 for line in parsed.split("\n") if line.startswith("1\t"))
-            total_trees_parsed+=tree_count
-            if time.time()>next_report:
-                print("\n\n************************\n\n",file=sys.stderr,flush=True)
-                duration=time.time()-started
-                print("{} [trees]   {}:{} [min:sec]   {} [trees/sec]   {} [sec/tree]".format(total_trees_parsed,duration//60,int(duration)%60,total_trees_parsed/duration,duration/total_trees_parsed),file=sys.stderr,flush=True)
-                print("\n\n************************\n\n",file=sys.stderr,flush=True)
-                next_report=time.time()+5.0
-        print(parsed,end="",flush=True,file=out)
-        if p.input_finished and p.job_counter==0:
-            break
-        
-
 if __name__=="__main__":
     import argparse
     THISDIR=os.path.dirname(os.path.abspath(__file__))
@@ -106,30 +48,30 @@ if __name__=="__main__":
     argparser.add_argument('--conf-yaml', default=os.path.join(THISDIR,"pipelines.yaml"), help='YAML with pipeline configs. Default: parser_dir/pipelines.yaml')
     argparser.add_argument('--pipeline', default="fi_tdt_all", help='Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
     argparser.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
-    argparser.add_argument('--batch-lines', default=10000, help='Number of lines in a job batch. Default %(default)d')
+    argparser.add_argument('--batch-lines', default=10000, type=int, help='Number of lines in a job batch. Default %(default)d')
     argparser.add_argument('--blocking-read', default=None, help='Use blocking read instead of non-blocking, give a filename (can be gzip)')
     args = argparser.parse_args()
 
     with open(args.conf_yaml) as f:
         pipelines=yaml.load(f)
-
-    
+   
     p=Pipeline(steps=pipelines[args.pipeline])
-    p.input_finished=False
 
+    print("Waiting for input",file=sys.stderr,flush=True)
+    line_buffer=[]
+    for line in sys.stdin:
+        line_buffer.append(line)
+        if (line.strip()=="" or not args.empty_line_batching) and len(line_buffer)>args.batch_lines:
+            if not p.is_alive(): #gotta end if something dies
+                print("Something crashed. Exiting.",file=sys.stderr,flush=True)
+                sys.exit(-1)
+            print("Feeding a batch",file=sys.stderr,flush=True)
+            p.put("".join(line_buffer))
+            line_buffer=[]
+    else:
+        if line_buffer:
+            print("Feeding final batch",file=sys.stderr,flush=True)
+            p.put("".join(line_buffer),final=True)
 
-    #Fetch results from pipeline in an infinite loop
-    outp_t=threading.Thread(target=output_thread,args=(p,sys.stdout,True))
-    outp_t.start()
-    
-    inp_t=threading.Thread(target=input_thread,args=(p,args))
-    inp_t.start()
+    p.join()
 
-    time.sleep(3)
-    
-    inp_t.join()
-    outp_t.join() #wait till output done
-
-    #...and we're done
-
-    

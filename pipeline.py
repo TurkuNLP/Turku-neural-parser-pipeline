@@ -13,11 +13,23 @@ class Pipeline:
         self.max_q_size=10
         self.q_in=Queue(self.max_q_size) #where to send data to the whole pipeline
         self.q_out=self.q_in #where to receive data from the whole pipeline
+        self.processes=[]
+
+        steps.append("output_server")
 
         for mod_name_and_params in steps:
             self.add_step(mod_name_and_params)
 
-    
+    def join(self):
+        for p in self.processes:
+            p.join()
+
+    def is_alive(self):
+        for p in self.processes:
+            if not p.is_alive():
+                return False
+        return True
+
     def add_step(self,module_name_and_params):
         config=module_name_and_params.split()
         module_name=config[0]
@@ -28,12 +40,15 @@ class Pipeline:
         args=mod.argparser.parse_args(params)
         process=Process(target=mod.launch,args=(args,step_in,self.q_out))
         process.start()
+        self.processes.append(process)
 
-    def put(self,txt):
+    def put(self,txt,final=False):
         """Start parsing a job, return id which can be used to retrieve the result"""
         batch_id=hashlib.md5((str(random.random())+txt).encode("utf-8")).hexdigest()
         self.q_in.put((batch_id,txt)) #first job of 1 total
         self.job_counter+=1
+        if final:
+            self.q_in.put(("FINAL",""))
         return batch_id
 
     def get(self,batch_id):

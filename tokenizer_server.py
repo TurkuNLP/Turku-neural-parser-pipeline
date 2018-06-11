@@ -24,7 +24,11 @@ def launch(args,q_in,q_out):
     
     t=TokenizerWrapper(args)
     while True:
+        print("I am tokenizer and I wait for more batches",file=sys.stderr,flush=True)
         jobid,txt=q_in.get()
+        if jobid=="FINAL":
+            return
+        print("I am tokenizer and I got a batch",file=sys.stderr,flush=True)
         q_out.put((jobid,t.parse_text(txt)))
     
 argparser = argparse.ArgumentParser(description='Tokenize text')

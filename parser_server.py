@@ -11,6 +11,8 @@ def launch(args,q_in,q_out):
     parser=parser_lib.NetworkParserWrapper(args.model,args.parser_dir)
     while True:
         jobid,txt=q_in.get()
+        if jobid=="FINAL":
+            return
         conllu=parser.parse_text(txt)
         if args.process_morpho == True:
             conllu=process_batch(conllu, detransfer=True)
