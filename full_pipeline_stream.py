@@ -70,7 +70,7 @@ def input_thread(p,args):
         batches=blocking_batch(f,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
         print("Starting input batching (blocking)...",batches,file=sys.stderr,flush=True)
     else:
-        print("Preparing nonblocking batches",fname,f,file=sys.stderr,flush=True)
+        print("Preparing nonblocking batches from sys.stdin",file=sys.stderr,flush=True)
         batches=non_blocking_batch(sys.stdin,batch_lines=args.batch_lines,wait_for_empty_line=args.empty_line_batching)
         print("Starting input batching (non-blocking)...",file=sys.stderr,flush=True)
     for batch in batches:
