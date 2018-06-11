@@ -36,3 +36,8 @@ tokenize:
   - tokenizer_server --model models/tokenizer_model --vocab models/tokenizer_vocab.pickle
   
   
+
+fi_tdt_new:
+  - parser_server --model models_new/Finnish-TDT-Tagger
+  - parser_server --model models_new/Finnish-TDT-Parser --process_morpho
+  - lemmatizer_server --gpu 0 --model models_new/lemmatizer.pt --lemma_cache models_new/finnish_lemma_cache.tsv
