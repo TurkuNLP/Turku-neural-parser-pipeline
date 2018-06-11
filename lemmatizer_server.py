@@ -32,6 +32,10 @@ def launch(args,q_in,q_out):
     lemmatizer=LemmatizerWrapper(args)
     while True:
         jobid,txt=q_in.get()
+        if jobid=="FINAL":
+            q_out.put((jobid,txt))
+            print("Lemmatizer exiting",file=sys.stderr,flush=True)
+            return
         q_out.put((jobid,lemmatizer.parse_text(txt)))
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')

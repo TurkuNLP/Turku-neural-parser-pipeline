@@ -73,5 +73,6 @@ if __name__=="__main__":
             print("Feeding final batch",file=sys.stderr,flush=True)
             p.put("".join(line_buffer),final=True)
 
+    print("DONE",file=sys.stderr,flush=True)
     p.join()
 

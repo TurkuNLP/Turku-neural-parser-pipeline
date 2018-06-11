@@ -11,6 +11,7 @@ def launch(args,q_in,q_out):
     while True:
         jobid,txt=q_in.get()
         if jobid=="FINAL":
+            print("Output exiting",file=sys.stderr,flush=True)
             return
         total_parsed+=sum(1 for line in txt.split("\n") if line.startswith("1\t"))
         if total_parsed>0 and time.time()>next_report:

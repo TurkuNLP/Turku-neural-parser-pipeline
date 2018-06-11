@@ -12,6 +12,7 @@ def launch(args,q_in,q_out):
     while True:
         jobid,txt=q_in.get()
         if jobid=="FINAL":
+            q_out.put((jobid,txt))
             return
         conllu=parser.parse_text(txt)
         if args.process_morpho == True:
