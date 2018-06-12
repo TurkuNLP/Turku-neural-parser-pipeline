@@ -1,5 +1,5 @@
 wheel
-tensorflow
+tensorflow==1.5.0
 keras
 h5py
 matplotlib
