@@ -1,6 +1,9 @@
 debug:
   - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
 
+fi_tdt_lemonly:
+  - marian_lemmatizer_server --model universal-lemmatizer/fi_tdt_marian
+
 fi_tdt_all:
   - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
   - parser_server --model models/Finnish-Tagger
