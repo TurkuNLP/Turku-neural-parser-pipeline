@@ -14,9 +14,10 @@ class TokenizerWrapper():
         self.model = load_model(args.model)
         with open(args.vocab,'rb') as inf:
             self.vocab = pickle.load(inf)
+        self.args=args
             
     def parse_text(self,txt):
-        return tokenizer.tokenize_text(txt,self.model,self.vocab)
+        return tokenizer.tokenize_text(txt,self.model,self.vocab,self.args.sentence_mode)
     
 def launch(args,q_in,q_out):
     global tokenizer #imports have to happen within launch() after fork()
@@ -36,4 +37,6 @@ def launch(args,q_in,q_out):
 argparser = argparse.ArgumentParser(description='Tokenize text')
 argparser.add_argument("--model", default="model", help="model file")
 argparser.add_argument("--vocab", default="vocab.pickle", help="vocab file")
+argparser.add_argument("--sentence-mode", default=False, action="store_true", help="Input is one sentence per line.")
+
 
