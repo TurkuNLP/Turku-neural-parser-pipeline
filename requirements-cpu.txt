@@ -1,10 +1,10 @@
 wheel
-tensorflow
+tensorflow==1.5.0
 keras
 h5py
 matplotlib
 flask
 
-#pytorch
-#torchvision
-#torchtext
+pytorch==0.3.1
+torchtext==0.2.3
+torchvision==0.2.1
