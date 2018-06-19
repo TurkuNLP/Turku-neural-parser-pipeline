@@ -2,22 +2,40 @@ debug:
   - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
 
 fi_tdt_lemonly:
-  - marian_lemmatizer_server --model universal-lemmatizer/fi_tdt_marian
+  - marian_lemmatizer_server --model universal-lemmatizer/marian-models/fi_tdt_v2/model.best-cross-entropy.npz --vocab universal-lemmatizer/marian-models/fi_tdt_v2/model.vocab
 
 fi_tdt_all:
   - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
-  - parser_server --model models/Finnish-Tagger
-  - parser_server --model models/Finnish-Parser --process_morpho
-  - lemmatizer_server --model models/lemmatizer.pt
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
+  - lemmatizer_server --model models/lemmatizer.pt  --lemma_cache models/finnish_lemma_cache.tsv
+
+fi_tdt_marian:
+  - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
+  - marian_lemmatizer_server --model universal-lemmatizer/marian-models/fi_tdt_v2/model.best-cross-entropy.npz --vocab universal-lemmatizer/marian-models/fi_tdt_v2/model.vocab --marian-port 53267
+
+fi_tdt_marian_sentencemode:
+  - tokenizer_server --model tokenizer/model --vocab tokenizer/vocab.pickle --sentence-mode
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
+  - marian_lemmatizer_server --model universal-lemmatizer/marian-models/fi_tdt_v2/model.best-cross-entropy.npz --vocab universal-lemmatizer/marian-models/fi_tdt_v2/model.vocab --marian-port 53269
+
+
+fi_tdt_marian_notok:
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
+  - marian_lemmatizer_server --model universal-lemmatizer/marian-models/fi_tdt_v2/model.best-cross-entropy.npz --vocab universal-lemmatizer/marian-models/fi_tdt_v2/model.vocab --marian-port 53267
 
 fi_tdt_nolem:
   - tokenizer_server --model models/tokenizer_model --vocab models/tokenizer_vocab.pickle
-  - parser_server --model models/Finnish-Tagger
-  - parser_server --model models/Finnish-Parser 
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser 
 
 fi_tdt_notok_nolem:
-  - parser_server --model models/Finnish-Tagger
-  - parser_server --model models/Finnish-Parser --process_morpho
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
 
 fi_tdt_notok_nolem_csc:
   - parser_server --model /wrk/jmnybl/UD_Finnish-TDT-v2.2-model/Finnish-TDT-Tagger
@@ -25,22 +43,20 @@ fi_tdt_notok_nolem_csc:
   - desperate_server
 
 fi_tdt_notok:
-  - parser_server --model models/Finnish-Tagger
-  - parser_server --model models/Finnish-Parser --process_morpho
-  - lemmatizer_server --model models/lemmatizer.pt
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
+  - lemmatizer_server --model models/lemmatizer.pt  --lemma_cache models/finnish_lemma_cache.tsv
 
 fi_tdt_notok_gpu:
-  - parser_server --model models/Finnish-Tagger
-  - parser_server --model models/Finnish-Parser --process_morpho
-  - lemmatizer_server --gpu 0 --model models/lemmatizer.pt
-
+  - parser_server --model models/Finnish-TDT-Tagger
+  - parser_server --model models/Finnish-TDT-Parser --process_morpho
+  - lemmatizer_server --gpu 0 --model models/lemmatizer.pt  --lemma_cache models/finnish_lemma_cache.tsv
 
 tokenize:
   - tokenizer_server --model models/tokenizer_model --vocab models/tokenizer_vocab.pickle
-  
-  
 
 fi_tdt_new:
   - parser_server --model models_new/Finnish-TDT-Tagger
   - parser_server --model models_new/Finnish-TDT-Parser --process_morpho
   - lemmatizer_server --gpu 0 --model models_new/lemmatizer.pt --lemma_cache models_new/finnish_lemma_cache.tsv
+
