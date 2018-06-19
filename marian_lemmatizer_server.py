@@ -25,7 +25,7 @@ class LemmatizerWrapper():
         """
         Lemmatizer model loading
         """
-        self.proc=subprocess.Popen(args=[args.marian_binary,"-m",args.model,"-v",args.model+".vocab.in",args.model+".vocab.out","-p",args.marian_port,"--mini-batch","256","--maxi-batch","100"])
+        self.proc=subprocess.Popen(args=[args.marian_binary,"-m",args.model,"-v",args.vocab+".in",args.vocab+".out","-p",args.marian_port,"--mini-batch","256","--maxi-batch","100"])
         time.sleep(2)
         self.cache={}
         if args.lemma_cache:  #form upos xpos feats lemma
@@ -68,6 +68,8 @@ class LemmatizerWrapper():
                     lemma=self.local_cache[token_data]
                 else:
                     assert False
+                if not lemma.strip():
+                    lemma="_"
                 cols[LEMMA]=lemma
                 result.append("\t".join(cols))
             result.append("")
@@ -86,7 +88,8 @@ def launch(args,q_in,q_out):
         q_out.put((jobid,lemmatizer.parse_text(txt)))
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
-argparser.add_argument('--model', type=str, help='Model (modelname.vocab.in and modelname.vocab.out are assumed as vocabularies)')
+argparser.add_argument('--model', type=str, help='Model')
+argparser.add_argument('--vocab', type=str, help='Model (vocab.in and vocab.out are assumed as vocabularies)')
 argparser.add_argument('--marian-binary', type=str, default=os.path.expanduser("~/marian/build/marian-server"),help='Path to marian-server. Default: ~/marian/build/marian-server')
 argparser.add_argument('--marian-port', type=str, default="48267", help='Port on which the marian server will run. Default: %(default)s')
 argparser.add_argument('--lemma-cache', type=str, default=None, help='a .tsv file with lemma cache')
