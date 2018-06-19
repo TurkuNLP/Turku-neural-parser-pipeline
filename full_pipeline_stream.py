@@ -49,12 +49,16 @@ if __name__=="__main__":
     argparser.add_argument('--pipeline', default="fi_tdt_all", help='Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
     argparser.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
     argparser.add_argument('--batch-lines', default=10000, type=int, help='Number of lines in a job batch. Default %(default)d')
-    argparser.add_argument('--blocking-read', default=None, help='Use blocking read instead of non-blocking, give a filename (can be gzip)')
+    argparser.add_argument('action', default="parse", nargs='?', help='What to do. parse (parses), list (lists pipelines)')
     args = argparser.parse_args()
 
     with open(args.conf_yaml) as f:
         pipelines=yaml.load(f)
-   
+
+    if args.action=="list":
+        print(sorted(pipelines.keys()),file=sys.stderr,flush=True)
+        sys.exit(0)
+        
     p=Pipeline(steps=pipelines[args.pipeline])
 
     print("Waiting for input",file=sys.stderr,flush=True)
