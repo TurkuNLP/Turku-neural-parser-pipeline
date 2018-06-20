@@ -1,6 +1,24 @@
 # Finnish neural dependency parser
 
-A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation.
+A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation. These are the current numbers, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. This is the "fi_tdt" model distributed with the parser
+
+```
+Metric     | Precision |    Recall |  F1 Score | AligndAcc
+-----------+-----------+-----------+-----------+-----------
+Tokens     |    100.00 |    100.00 |    100.00 |
+Sentences  |    100.00 |    100.00 |    100.00 |
+Words      |    100.00 |    100.00 |    100.00 |
+UPOS       |     96.92 |     96.92 |     96.92 |     96.92
+XPOS       |     97.89 |     97.89 |     97.89 |     97.89
+UFeats     |     95.69 |     95.69 |     95.69 |     95.69
+AllTags    |     94.28 |     94.28 |     94.28 |     94.28
+Lemmas     |     94.91 |     94.91 |     94.91 |     94.91
+UAS        |     90.90 |     90.90 |     90.90 |     90.90
+LAS        |     88.37 |     88.37 |     88.37 |     88.37
+CLAS       |     86.95 |     86.92 |     86.93 |     86.92
+MLAS       |     81.46 |     81.44 |     81.45 |     81.44
+BLEX       |     81.91 |     81.88 |     81.89 |     81.88
+```
 
 # Installation
 
