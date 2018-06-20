@@ -20,6 +20,8 @@ MLAS       |     81.46 |     81.44 |     81.45 |     81.44
 BLEX       |     81.91 |     81.88 |     81.89 |     81.88
 ```
 
+Without lemmatization, the throughput of the parser is on the order of 250 sentences a second on a GPU. Lemmatization is currently a major bottleneck and needs special treatment when the data sizes are massive. 
+
 # Installation
 
 ## Download the code
