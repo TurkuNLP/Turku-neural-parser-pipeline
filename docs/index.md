@@ -33,12 +33,12 @@ You also need to install PyTorch by selecting the appropriate options from https
 GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA.
 If you run on CPU and have no CUDA, then select None.
 
-1. Run the commands which pytorch.org gives
+1. Run the `commands which pytorch.org gives`
 2. Run yet `pip3 install torchtext` when (1) is ready and you're done
 
 ## Download the models
 
-All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and you can use the following utility script to fetch the model:
+All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and you can use the following utility script to fetch the model you need:
 
     python3 fetch_models.py fi_tdt
 
@@ -46,8 +46,7 @@ All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and 
 
 The parser has these properties:
 
-* a relatively long start-up cost when it's loading the models (see the server mode to prevent model reloading)
-* memory-hungry (this is on our todo, bear with us)
+* a long start-up cost when it's loading the models (see the server mode to prevent model reloading)
 * very fast when parsing large documents because of the mini-batch style of computing
 * efficient use of GPU, about 5x faster than the previous Finnish-dep-parser (which could not use GPU for anything)
 * transparent passing through metadata
@@ -58,7 +57,7 @@ In the input data, all lines which start with `###C:` are treated as metadata an
 
 ## Pipelines
 
-Various pipelines can be built out of the various components of the parser and these are generally defined in model_directory/pipelines.yaml. You can also list what you have like so:
+Various pipelines can be built out of the components of the parser and these are generally defined in model_directory/pipelines.yaml. You can also list what you have like so:
 
     python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml list
 
@@ -73,13 +72,13 @@ Other pipelines (which skip some of these steps etc) can be built easily by mimi
 
 ## Stream mode
 
-In the stream mode, the parser reads from stdin, outputs to stdout
+In the stream mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it the file with pipelines and you need to tell it which pipeline to run (parse_plaintext is the default). So you can run the parser as:
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml > myfile.conllu
 
 ## Server mode
 
-In the server mode, the parser loads all models and parses in a batch style. Docs TODO.
+Docs TODO
 
 # pipelines.yaml file
 
