@@ -41,6 +41,15 @@ def non_blocking_batch(inp,timeout=0.2,batch_lines=10000,wait_for_empty_line=Fal
             yield "".join(line_buffer) #got enough
             line_buffer=[]
 
+def read_pipelines(fname):
+    absdir=os.path.dirname(os.path.abspath(fname))
+    with open(fname) as f:
+        pipelines=yaml.load(f)
+    for pipeline_name,component_list in pipelines.items():
+        new_component_list=[c.format(thisdir=absdir) for c in component_list]
+        pipelines[pipeline_name]=new_component_list
+    return pipelines
+            
 if __name__=="__main__":
     import argparse
     THISDIR=os.path.dirname(os.path.abspath(__file__))
@@ -52,8 +61,7 @@ if __name__=="__main__":
     argparser.add_argument('action', default="parse", nargs='?', help='What to do. parse (parses), list (lists pipelines)')
     args = argparser.parse_args()
 
-    with open(args.conf_yaml) as f:
-        pipelines=yaml.load(f)
+    pipelines=read_pipelines(args.conf_yaml)
 
     if args.action=="list":
         print(sorted(pipelines.keys()),file=sys.stderr,flush=True)
