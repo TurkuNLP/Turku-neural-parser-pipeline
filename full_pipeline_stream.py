@@ -55,10 +55,10 @@ if __name__=="__main__":
     THISDIR=os.path.dirname(os.path.abspath(__file__))
     argparser = argparse.ArgumentParser(description='Parser pipeline')
     argparser.add_argument('--conf-yaml', default=os.path.join(THISDIR,"pipelines.yaml"), help='YAML with pipeline configs. Default: parser_dir/pipelines.yaml')
-    argparser.add_argument('--pipeline', default="fi_tdt_all", help='Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
+    argparser.add_argument('--pipeline', default="parse_plaintext", help='[DEPRECATED] Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
     argparser.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
     argparser.add_argument('--batch-lines', default=10000, type=int, help='Number of lines in a job batch. Default %(default)d')
-    argparser.add_argument('action', default="parse", nargs='?', help='What to do. parse (parses), list (lists pipelines)')
+    argparser.add_argument('action', default=None, nargs='?', help="What to do. Either 'list' to lists pipelines or a pipeline name to parse, or nothing in which case the default parse_plaintext is used.")
     args = argparser.parse_args()
 
     pipelines=read_pipelines(args.conf_yaml)
@@ -66,8 +66,11 @@ if __name__=="__main__":
     if args.action=="list":
         print(sorted(pipelines.keys()),file=sys.stderr,flush=True)
         sys.exit(0)
+    elif args.action is not None and args.action!="parse": #deprecated legacy stuff, allowing calls like --pipeline pipelinename parse
+        pipeline=pipelines[args.action]
+    elif args.action is None or args.action=="parse":
+        pipeline=pipelines[args.pipeline]
         
-    pipeline=pipelines[args.pipeline]
     if pipeline[0].startswith("extraoptions"):
         extraoptions=pipeline[0].split()[1:]
         pipeline.pop(0)
