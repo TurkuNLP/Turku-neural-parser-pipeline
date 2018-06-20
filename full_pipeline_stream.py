@@ -67,7 +67,14 @@ if __name__=="__main__":
         print(sorted(pipelines.keys()),file=sys.stderr,flush=True)
         sys.exit(0)
         
-    p=Pipeline(steps=pipelines[args.pipeline])
+    pipeline=pipelines[args.pipeline]
+    if pipeline[0].startswith("extraoptions"):
+        extraoptions=pipeline[0].split()[1:]
+        pipeline.pop(0)
+        newoptions=extraoptions+sys.argv[1:]
+        print("Got extra arguments from the pipeline, now running with", newoptions, file=sys.stderr, flush=True)
+        args=argparser.parse_args(newoptions)
+    p=Pipeline(steps=pipeline)
 
     print("Waiting for input",file=sys.stderr,flush=True)
     line_buffer=[]
