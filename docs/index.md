@@ -27,12 +27,14 @@ or
    
     pip3 install -r requirements-cpu.txt
 
-and then you also need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
+## Install pytorch
+
+You also need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
 GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA.
 If you run on CPU and have no CUDA, then select None.
 
 1. Run the commands which pytorch.org gives
-2. Run yet `pip3 install torchtext" when (1) is ready
+2. Run yet `pip3 install torchtext` when (1) is ready and you're done
 
 ## Download the models
 
@@ -73,7 +75,7 @@ Other pipelines (which skip some of these steps etc) can be built easily by mimi
 
 In the stream mode, the parser reads from stdin, outputs to stdout
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
 
 ## Server mode
 
