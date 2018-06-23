@@ -3,7 +3,11 @@ import io
 import argparse
 import numpy as np
 import pickle
-import ufal.udpipe as udpipe
+try:
+    import ufal.udpipe as udpipe
+except:
+    print("pip3 install ufal.udpipe",file=sys.stderr)
+    raise
 
 class UDPipeTokenizerWrapper():
 
