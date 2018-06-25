@@ -1,4 +1,105 @@
 # Finnish neural dependency parser
 
-A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation.
+A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation. These are the current numbers, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. This is the "fi_tdt" model distributed with the parser
 
+```
+Metric     | Precision |    Recall |  F1 Score | AligndAcc
+-----------+-----------+-----------+-----------+-----------
+Tokens     |    100.00 |    100.00 |    100.00 |
+Sentences  |    100.00 |    100.00 |    100.00 |
+Words      |    100.00 |    100.00 |    100.00 |
+UPOS       |     96.92 |     96.92 |     96.92 |     96.92
+XPOS       |     97.89 |     97.89 |     97.89 |     97.89
+UFeats     |     95.69 |     95.69 |     95.69 |     95.69
+AllTags    |     94.28 |     94.28 |     94.28 |     94.28
+Lemmas     |     94.91 |     94.91 |     94.91 |     94.91
+UAS        |     90.90 |     90.90 |     90.90 |     90.90
+LAS        |     88.37 |     88.37 |     88.37 |     88.37
+CLAS       |     86.95 |     86.92 |     86.93 |     86.92
+MLAS       |     81.46 |     81.44 |     81.45 |     81.44
+BLEX       |     81.91 |     81.88 |     81.89 |     81.88
+```
+
+Without lemmatization, the throughput of the parser is on the order of 250 sentences a second on a GPU. Lemmatization is currently a major bottleneck and needs special treatment when the data sizes are massive. 
+
+# Installation
+
+## Download the code
+
+Clone the parser as well as all of its submodules as follows:
+
+    git clone https://github.com/TurkuNLP/Finnish-dep-parser-neural.git
+    cd Finnish-dep-parser-neural
+    git submodule update --init --recursive
+
+## Setup Python environment
+
+We highly recommend that you make a virtual environment for the parser:
+
+    python3 -m venv venv-parser-neural
+    source venv-parser-neural/bin/activate
+
+Then you need to install the necessary libraries:
+
+    pip3 install -r requirements-gpu.txt
+
+or
+   
+    pip3 install -r requirements-cpu.txt
+
+## Install pytorch
+
+In case pytorch would not install correctly through pip, you may need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
+GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA.
+If you run on CPU and have no CUDA, then select None.
+
+1. Run the `commands which pytorch.org gives`
+2. Run yet `pip3 install torchtext` when (1) is ready and you're done
+
+## Download the models
+
+All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and you can use the following utility script to fetch the model you need:
+
+    python3 fetch_models.py fi_tdt
+
+# Running the parser
+
+The parser has these properties:
+
+* a long start-up cost when it's loading the models (see the server mode to prevent model reloading)
+* very fast when parsing large documents because of the mini-batch style of computing
+* efficient use of GPU, about 5x faster than the previous Finnish-dep-parser (which could not use GPU for anything)
+* transparent passing through metadata
+
+## Metadata in input
+
+In the input data, all lines which start with `###C:` are treated as metadata and will be passed through the pipeline unmodified, and attached in the conllu output to the following sentence. This is an easy way to pass metadata through the pipeline. Note that since the conllu format attaches metadata to sentences, the last line of a file cannot be the `###C:` comment. It is fine to have several comment lines one after another.
+
+## Pipelines
+
+Various pipelines can be built out of the components of the parser and these are generally defined in model_directory/pipelines.yaml. You can also list what you have like so:
+
+    python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml list
+
+For Finnish these are:
+
+* `parse_plaintext` read plain text, tokenize, split into sentences, tag, parse, lemmatize
+* `parse_sentlines` read text one sentence per line, tokenize, tag, parse, lemmatize
+* `parse_wsline` read whitespace tokenized text one sentence per line, tag, parse, lemmatize
+* `parse_conllu` read conllu, tag, parse, lemmatize
+
+Other pipelines (which skip some of these steps etc) can be built easily by mimicking the existing pipelines in the `pipelines.yaml` (also see below)
+
+## Stream mode
+
+In the stream mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it the file with pipelines and you need to tell it which pipeline to run (parse_plaintext is the default). So you can run the parser as:
+
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml > myfile.conllu
+
+## Server mode
+
+Docs TODO
+
+# pipelines.yaml file
+
+For those who wish to hack the pipelines.yaml file. You can add `extraoptions` to enforce some parameters applied as if you gave them on the command line. This is curently only used to enforce batching on empty lines in pipelines that parse conllu, making sure the input is not cut in the middle of the line. As you can probably figure out, the pipeline simply specifies which modules are launched and their parameters, new steps to the pipeline are easy to add by mimicking the `*_mod.py` files.
