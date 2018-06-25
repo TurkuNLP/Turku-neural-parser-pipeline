@@ -16,7 +16,7 @@ class UDPipeTokenizerWrapper():
         Tokenizer model loading etc goes here
         """
         self.model = udpipe.Model.load(args.model)
-        self.pipeline = udpipe.Pipeline(self.model,"tokenize",udpipe.Pipeline.DEFAULT,udpipe.Pipeline.DEFAULT,"conllu")
+        self.pipeline = udpipe.Pipeline(self.model,"tokenize","none","none","conllu")
             
     def parse_text(self,txt):
         err=udpipe.ProcessingError()
