@@ -49,7 +49,7 @@ or
 
 ## Install pytorch
 
-You also need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
+In case pytorch would not install correctly through pip, you may need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
 GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA.
 If you run on CPU and have no CUDA, then select None.
 
