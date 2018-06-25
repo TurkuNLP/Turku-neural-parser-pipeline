@@ -1,5 +1,5 @@
 debug:
-  - tokenizer_mod --model tokenizer/model --vocab tokenizer/vocab.pickle
+  - tokenizer_udpipe_mod --model /usr/share/ParseBank/ud-2.2-st-train-dev-data/baseline-models-conll18-udv2.2/models/finnish-tdt-ud-2.2-conll18-180430.udpipe
 
 fi_tdt_lemonly:
   - marian_lemmatizer_mod --model universal-lemmatizer/marian-models/fi_tdt_v2/model.best-cross-entropy.npz --vocab universal-lemmatizer/marian-models/fi_tdt_v2/model.vocab
