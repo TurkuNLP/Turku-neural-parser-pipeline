@@ -10,6 +10,7 @@ sent_regex=re.compile(r"""[.!?](?=\s+[A-Z]|$)""",re.U|re.M)
 token_regex=re.compile(r"""\s|([,:;']+)(?=[\s]|[.?!]|$)|([.?!]+)(?=$)|(?<=\s)([']+)|(?<=^)([']+)""",re.U|re.M)
 
 def launch(args,q_in,q_out):
+    counter=0
     while True:
         jobid,txt=q_in.get()
         if jobid=="FINAL":
@@ -17,6 +18,9 @@ def launch(args,q_in,q_out):
             return
         cache=io.StringIO()
         for sent in sentences(txt):
+            print("# sent_id =",counter,file=cache)
+            counter+=1
+            print("# text =",txt.replace("\n"," "),file=cache)
             for id,token in enumerate(tokens(sent)):
                 print(id+1,token,*(["_"]*8),sep="\t",file=cache)
             print(file=cache)
