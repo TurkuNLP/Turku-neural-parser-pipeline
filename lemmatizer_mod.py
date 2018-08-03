@@ -21,8 +21,14 @@ class LemmatizerWrapper():
         """
         Lemmatizer model loading
         """
-        self.lemmatizer_model=Lemmatizer(["-model", args.model, "-gpu", str(args.gpu), "-batch_size", str(args.batch_size), "-lemma_cache", args.lemma_cache])
+        arguments=["-model", args.model, "-gpu", str(args.gpu), "-batch_size", str(args.batch_size), "-lemma_cache", args.lemma_cache]
+        if args.replace_unk:
+            arguments.append("-replace_unk")
+        if args.no_xpos:
+            arguments.append("-no_xpos")
+        self.lemmatizer_model=Lemmatizer(arguments)
         pass
+
             
     def parse_text(self,conllu):
         result_conllu=self.lemmatizer_model.lemmatize_batch(conllu)
@@ -43,3 +49,5 @@ argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help
 argparser.add_argument('--gpu', type=int, default=-1, help='Gpu device id, if -1 use cpu')
 argparser.add_argument('--batch_size', type=int, default=64, help='Batch size')
 argparser.add_argument('--lemma_cache', type=str, default='', help='Lemma cache file')
+argparser.add_argument('--replace_unk', action="store_true", default=False, help='Replace unk option in opennmt based lemmatizer')
+argparser.add_argument('--no_xpos', action="store_true", default=False, help='Do not pass XPOS for the lemmatizer')

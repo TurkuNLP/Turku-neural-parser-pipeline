@@ -92,9 +92,13 @@ if __name__=="__main__":
             line_buffer=[]
     else:
         if line_buffer:
+            if not p.is_alive(): #gotta end if something dies
+                print("Something crashed. Exiting.",file=sys.stderr,flush=True)
+                sys.exit(-1)
             print("Feeding final batch",file=sys.stderr,flush=True)
-            p.put("".join(line_buffer),final=True)
+            p.put("".join(line_buffer))
 
     print("DONE",file=sys.stderr,flush=True)
+    p.send_final()
     p.join()
 

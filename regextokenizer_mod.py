@@ -20,7 +20,7 @@ def launch(args,q_in,q_out):
         for sent in sentences(txt):
             print("# sent_id =",counter,file=cache)
             counter+=1
-            print("# text =",txt.replace("\n"," "),file=cache)
+            #print("# text =",sent.replace("\n"," "),file=cache)
             for id,token in enumerate(tokens(sent)):
                 print(id+1,token,*(["_"]*8),sep="\t",file=cache)
             print(file=cache)

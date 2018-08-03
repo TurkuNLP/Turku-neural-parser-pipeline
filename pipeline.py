@@ -42,6 +42,9 @@ class Pipeline:
         process.start()
         self.processes.append(process)
 
+    def send_final(self):
+        self.q_in.put(("FINAL",""))
+        
     def put(self,txt,final=False):
         """Start parsing a job, return id which can be used to retrieve the result"""
         batch_id=hashlib.md5((str(random.random())+txt).encode("utf-8")).hexdigest()
