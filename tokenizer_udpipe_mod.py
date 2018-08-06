@@ -16,7 +16,10 @@ class UDPipeTokenizerWrapper():
         Tokenizer model loading etc goes here
         """
         self.model = udpipe.Model.load(args.model)
-        self.pipeline = udpipe.Pipeline(self.model,"tokenize","none","none","conllu")
+        if args.presegmented:
+            self.pipeline = udpipe.Pipeline(self.model,"tokenizer=presegmented","none","none","conllu")
+        else:
+            self.pipeline = udpipe.Pipeline(self.model,"tokenize","none","none","conllu")
             
     def parse_text(self,txt):
         err=udpipe.ProcessingError()
@@ -33,3 +36,4 @@ def launch(args,q_in,q_out):
     
 argparser = argparse.ArgumentParser(description='UDPipe tokenize text')
 argparser.add_argument("--model", default="model", help="model file")
+argparser.add_argument("--presegmented", default=False, action="store_true", help="Input is already sentence segmented (one sentence per line), run only tokenizer.")
