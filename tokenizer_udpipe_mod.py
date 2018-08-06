@@ -3,11 +3,14 @@ import io
 import argparse
 import numpy as np
 import pickle
+import re
 try:
     import ufal.udpipe as udpipe
 except:
     print("pip3 install ufal.udpipe",file=sys.stderr)
     raise
+
+comment_regex=re.compile("^####?C: ?")
 
 class UDPipeTokenizerWrapper():
 
@@ -23,7 +26,20 @@ class UDPipeTokenizerWrapper():
             
     def parse_text(self,txt):
         err=udpipe.ProcessingError()
-        return self.pipeline.process(txt,err)
+        tokenized=""
+        current_block=[]
+        for line in txt.split("\n"):
+            if re.match(comment_regex, line.lstrip()): # comment line
+                if current_block:
+                    tokenized+=self.pipeline.process("\n".join(current_block),err)
+                    current_block=[]
+                tokenized+=re.sub(comment_regex, "# ", line.lstrip()+"\n")
+                continue
+            # normal text line, save to current block to be tokenized
+            current_block.append(line)
+        if current_block:
+            tokenized+=self.pipeline.process("\n".join(current_block),err)
+        return tokenized
     
 def launch(args,q_in,q_out):
     t=UDPipeTokenizerWrapper(args)
