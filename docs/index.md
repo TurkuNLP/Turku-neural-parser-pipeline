@@ -5,19 +5,19 @@ A new take on the trusty old Finnish-dep-parser. The current pipeline is fully n
 ```
 Metric     | Precision |    Recall |  F1 Score | AligndAcc
 -----------+-----------+-----------+-----------+-----------
-Tokens     |    100.00 |    100.00 |    100.00 |
-Sentences  |    100.00 |    100.00 |    100.00 |
-Words      |    100.00 |    100.00 |    100.00 |
-UPOS       |     96.92 |     96.92 |     96.92 |     96.92
-XPOS       |     97.89 |     97.89 |     97.89 |     97.89
-UFeats     |     95.69 |     95.69 |     95.69 |     95.69
-AllTags    |     94.28 |     94.28 |     94.28 |     94.28
-Lemmas     |     94.91 |     94.91 |     94.91 |     94.91
-UAS        |     90.90 |     90.90 |     90.90 |     90.90
-LAS        |     88.37 |     88.37 |     88.37 |     88.37
-CLAS       |     86.95 |     86.92 |     86.93 |     86.92
-MLAS       |     81.46 |     81.44 |     81.45 |     81.44
-BLEX       |     81.91 |     81.88 |     81.89 |     81.88
+Tokens     |     99.74 |     99.63 |     99.69 |
+Sentences  |     88.55 |     85.02 |     86.75 |
+Words      |     99.74 |     99.63 |     99.69 |
+UPOS       |     96.63 |     96.52 |     96.57 |     96.88
+XPOS       |     97.66 |     97.55 |     97.61 |     97.92
+UFeats     |     95.47 |     95.36 |     95.41 |     95.71
+AllTags    |     94.03 |     93.92 |     93.97 |     94.27
+Lemmas     |     95.30 |     95.19 |     95.24 |     95.54
+UAS        |     89.04 |     88.94 |     88.99 |     89.27
+LAS        |     86.53 |     86.43 |     86.48 |     86.75
+CLAS       |     85.24 |     85.21 |     85.22 |     85.46
+MLAS       |     79.86 |     79.83 |     79.85 |     80.07
+BLEX       |     81.07 |     81.04 |     81.05 |     81.27
 ```
 
 Without lemmatization, the throughput of the parser is on the order of 250 sentences a second on a GPU. Lemmatization is currently a major bottleneck and needs special treatment when the data sizes are massive. 
@@ -28,8 +28,8 @@ Without lemmatization, the throughput of the parser is on the order of 250 sente
 
 Clone the parser as well as all of its submodules as follows:
 
-    git clone https://github.com/TurkuNLP/Finnish-dep-parser-neural.git
-    cd Finnish-dep-parser-neural
+    git clone https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
+    cd Turku-neural-parser-pipeline
     git submodule update --init --recursive
 
 ## Setup Python environment
@@ -87,6 +87,7 @@ For Finnish these are:
 * `parse_sentlines` read text one sentence per line, tokenize, tag, parse, lemmatize
 * `parse_wsline` read whitespace tokenized text one sentence per line, tag, parse, lemmatize
 * `parse_conllu` read conllu, tag, parse, lemmatize
+* `wipeparse_conllu` read conllu, wipe existing values from all columns, tag, parse, lemmatize
 
 Other pipelines (which skip some of these steps etc) can be built easily by mimicking the existing pipelines in the `pipelines.yaml` (also see below)
 
@@ -94,7 +95,7 @@ Other pipelines (which skip some of these steps etc) can be built easily by mimi
 
 In the stream mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it the file with pipelines and you need to tell it which pipeline to run (parse_plaintext is the default). So you can run the parser as:
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml > myfile.conllu
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
 
 ## Server mode
 
