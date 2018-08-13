@@ -1,4 +1,7 @@
-# Finnish neural dependency parser
+# Turku neural parser pipeline
+A neural parsing pipeline for segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages. Accuracies for all languages, see TurkuNLP at http://universaldependencies.org/conll18/results.html.
+
+## Finnish neural dependency parser
 
 A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation. These are the current numbers, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. This is the "fi_tdt" model distributed with the parser
 
@@ -104,3 +107,19 @@ Docs TODO
 # pipelines.yaml file
 
 For those who wish to hack the pipelines.yaml file. You can add `extraoptions` to enforce some parameters applied as if you gave them on the command line. This is curently only used to enforce batching on empty lines in pipelines that parse conllu, making sure the input is not cut in the middle of the line. As you can probably figure out, the pipeline simply specifies which modules are launched and their parameters, new steps to the pipeline are easy to add by mimicking the `*_mod.py` files.
+
+# Referencies
+
+Main reference for the pipeline:
+```
+@inproceedings{udst:turkunlp,
+author = {Jenna Kanerva and Filip Ginter and Niko Miekka and Akseli Leino and Tapio Salakoski},
+title = {{Turku Neural Parser Pipeline: An End-to-End System for the CoNLL 2018 Shared Task}},
+booktitle = {{Proceedings of the CoNLL 2018 Shared Task: Multilingual Parsing from Raw Text to Universal Dependencies}},
+publisher = "Association for Computational Linguistics",
+location = "Brussels, Belgium",
+year={2018}
+}
+```
+
+Other references TODO
