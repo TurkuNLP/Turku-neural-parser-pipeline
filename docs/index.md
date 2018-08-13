@@ -114,8 +114,8 @@ Main reference for the pipeline:
 ```
 @inproceedings{udst:turkunlp,
 author = {Jenna Kanerva and Filip Ginter and Niko Miekka and Akseli Leino and Tapio Salakoski},
-title = {{Turku Neural Parser Pipeline: An End-to-End System for the CoNLL 2018 Shared Task}},
-booktitle = {{Proceedings of the CoNLL 2018 Shared Task: Multilingual Parsing from Raw Text to Universal Dependencies}},
+title = {Turku Neural Parser Pipeline: An End-to-End System for the CoNLL 2018 Shared Task},
+booktitle = {Proceedings of the CoNLL 2018 Shared Task: Multilingual Parsing from Raw Text to Universal Dependencies},
 publisher = "Association for Computational Linguistics",
 location = "Brussels, Belgium",
 year={2018}
