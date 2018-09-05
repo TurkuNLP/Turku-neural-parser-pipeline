@@ -39,6 +39,7 @@ class Pipeline:
         self.q_out=Queue(self.max_q_size) #new pipeline end
         args=mod.argparser.parse_args(params)
         process=Process(target=mod.launch,args=(args,step_in,self.q_out))
+        process.daemon=True
         process.start()
         self.processes.append(process)
 
