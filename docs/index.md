@@ -88,11 +88,12 @@ For Finnish these are:
 
 * `parse_plaintext` read plain text, tokenize, split into sentences, tag, parse, lemmatize
 * `parse_sentlines` read text one sentence per line, tokenize, tag, parse, lemmatize
-* `parse_wsline` read whitespace tokenized text one sentence per line, tag, parse, lemmatize
-* `parse_conllu` read conllu, tag, parse, lemmatize
-* `wipeparse_conllu` read conllu, wipe existing values from all columns, tag, parse, lemmatize
+* `parse_wslines` read whitespace tokenized text one sentence per line, tag, parse, lemmatize
+* `parse_conllu` read conllu, wipe existing values from all columns, tag, parse, lemmatize
+* `parse_conllu_nolemmas` read conllu, wipe existing values from all columns, tag, parse
+* `tokenize` read plain text, tokenize, split into sentences
 
-Other pipelines (which skip some of these steps etc) can be built easily by mimicking the existing pipelines in the `pipelines.yaml` (also see below)
+Other pipelines (which skip some of these steps etc) can be built easily by mimicking the existing pipelines in the `pipelines.yaml` (also see below). If you wish to run conllu input without wipe_mod (which wipes existing values from all columns), note that lemmatizer modules are designed to pass existing lemma values through unchanged and lemmatize only words with empty lemma field (`_`).
 
 ## Stream mode
 
