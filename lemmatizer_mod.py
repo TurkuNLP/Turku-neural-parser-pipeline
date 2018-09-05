@@ -35,7 +35,7 @@ class LemmatizerWrapper():
 def launch(args,q_in,q_out):
 
     if args.lemma_cache!="" or args.no_xpos==True:
-        sys.exit("ERROR! Calling lemmatizer with outdated parameters, you probably need to update your trained models.\nPlease, download updated models with 'python fetch_models.py treebank_code'\nEXITING")
+        sys.exit("ERROR! Calling lemmatizer with outdated parameters, you probably need to update your pipeline configs.\nPlease, download updated models with 'python fetch_models.py treebank_code'\nEXITING")
 
     lemmatizer=LemmatizerWrapper(args)
     while True:
