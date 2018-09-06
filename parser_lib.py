@@ -27,8 +27,8 @@ import sys
 import codecs
 from argparse import ArgumentParser
 
-from parser import Configurable
-from parser import Network
+from nparser import Configurable
+from nparser import Network
 import io
 import os
 
