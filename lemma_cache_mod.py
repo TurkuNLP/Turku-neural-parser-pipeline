@@ -43,7 +43,7 @@ class LemmaCacheWrapper():
 
     def read_cache(self, cache_file):
         """ make lemmatizer faster by keeping lemma cache (run lemmatizer only for words not in this cache) """
-        with open(cache_file, "rt") as f:
+        with open(cache_file, "rt", encoding="utf8") as f:
             for line in f:
                 form, upos, xpos, feats, lemma = line.strip().split("\t")
                 self.cache[(form, upos, xpos, feats)]=lemma
