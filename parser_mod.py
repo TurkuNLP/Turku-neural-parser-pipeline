@@ -6,7 +6,7 @@ import argparse
 import traceback
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "Parser-v2"))
-from parser.scripts.transfer_morpho import process_batch
+from nparser.scripts.transfer_morpho import process_batch
 
 def launch(args,q_in,q_out):
     try:
