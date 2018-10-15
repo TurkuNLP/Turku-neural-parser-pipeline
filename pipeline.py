@@ -15,8 +15,6 @@ class Pipeline:
         self.q_out=self.q_in #where to receive data from the whole pipeline
         self.processes=[]
 
-        steps.append("output_mod")
-
         for mod_name_and_params in steps:
             self.add_step(mod_name_and_params)
 
