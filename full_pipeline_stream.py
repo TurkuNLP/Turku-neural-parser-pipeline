@@ -77,6 +77,8 @@ if __name__=="__main__":
         newoptions=extraoptions+sys.argv[1:]
         print("Got extra arguments from the pipeline, now running with", newoptions, file=sys.stderr, flush=True)
         args=argparser.parse_args(newoptions)
+
+    pipeline.append("output_mod")
     p=Pipeline(steps=pipeline)
 
     print("Waiting for input",file=sys.stderr,flush=True)
