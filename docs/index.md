@@ -1,9 +1,9 @@
 # Turku neural parser pipeline
-A neural parsing pipeline for segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages. Accuracies for all languages, see TurkuNLP at http://universaldependencies.org/conll18/results.html.
+A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at http://universaldependencies.org/conll18/results.html.
 
 ## Finnish neural dependency parser
 
-A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation. These are the current numbers, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. This is the "fi_tdt" model distributed with the parser
+A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation. These are the current numbers, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. **This is the "fi_tdt" model distributed with the parser**
 
 ```
 Metric     | Precision |    Recall |  F1 Score | AligndAcc
@@ -21,9 +21,7 @@ LAS        |     86.53 |     86.43 |     86.48 |     86.75
 CLAS       |     85.24 |     85.21 |     85.22 |     85.46
 MLAS       |     79.86 |     79.83 |     79.85 |     80.07
 BLEX       |     81.07 |     81.04 |     81.05 |     81.27
-```
-
-Without lemmatization, the throughput of the parser is on the order of 250 sentences a second on a GPU. Lemmatization is currently a major bottleneck and needs special treatment when the data sizes are massive. 
+``` 
 
 # Installation
 
@@ -65,7 +63,14 @@ All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and 
 
     python3 fetch_models.py fi_tdt
 
-# Running the parser
+# Running the parser -- short version
+
+In the basic streaming mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as:
+
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
+
+
+# Running the parser -- long version
 
 The parser has these properties:
 
@@ -108,6 +113,12 @@ Docs TODO
 # pipelines.yaml file
 
 For those who wish to hack the pipelines.yaml file. You can add `extraoptions` to enforce some parameters applied as if you gave them on the command line. This is curently only used to enforce batching on empty lines in pipelines that parse conllu, making sure the input is not cut in the middle of the line. As you can probably figure out, the pipeline simply specifies which modules are launched and their parameters, new steps to the pipeline are easy to add by mimicking the `*_mod.py` files.
+
+# Speed
+
+Without lemmatization, the throughput of the parser is on the order of 250 sentences a second on a GPU. On my laptop CPU I was able to run approx. 58 sentences/second.
+
+Lemmatization is currently a major bottleneck and needs special treatment when the data sizes are massive. We are working on it. Currently the lemmatizer runs approx. 10 sentences/second on both CPU and GPU.
 
 # Referencies
 
