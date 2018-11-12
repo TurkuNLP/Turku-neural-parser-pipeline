@@ -25,6 +25,12 @@ BLEX       |     81.07 |     81.04 |     81.05 |     81.27
 
 # Installation
 
+## Prerequisites
+
+For Ubuntu-based systems, the pre-requisities are
+
+    sudo apt install build-essential python3-dev python3-virtualenv
+
 ## Download the code
 
 Clone the parser as well as all of its submodules as follows:
@@ -35,10 +41,11 @@ Clone the parser as well as all of its submodules as follows:
 
 ## Setup Python environment
 
-We highly recommend that you make a virtual environment for the parser:
+We highly recommend that you make a virtual environment for the parser and install the `wheel` package:
 
     python3 -m venv venv-parser-neural
     source venv-parser-neural/bin/activate
+    pip3 install wheel
 
 Then you need to install the necessary libraries:
 
