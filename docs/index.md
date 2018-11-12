@@ -29,7 +29,7 @@ BLEX       |     81.07 |     81.04 |     81.05 |     81.27
 
 For Ubuntu-based systems, the pre-requisities are
 
-    sudo apt install build-essential python3-dev python3-virtualenv
+    sudo apt install build-essential python3-dev python3-virtualenv python3-tk
 
 ## Download the code
 
