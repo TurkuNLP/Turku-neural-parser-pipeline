@@ -6,7 +6,7 @@ matplotlib
 flask
 
 torch==0.4.1
-torchtext==0.3.0
+torchtext==0.3.1
 torchvision==0.2.1
 ufal.udpipe
 configargparse
