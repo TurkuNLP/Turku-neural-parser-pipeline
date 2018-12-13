@@ -49,7 +49,7 @@ def launch(args,q_in,q_out):
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
 argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help='Model')
 argparser.add_argument('--gpu', type=int, default=0, help='Gpu device id, if -1 use cpu')
-argparser.add_argument('--batch_size', type=int, default=200, help='Batch size')
+argparser.add_argument('--batch_size', type=int, default=100, help='Batch size')
 argparser.add_argument('--replace_unk', action="store_true", default=False, help='Replace unk option in opennmt based lemmatizer')
 argparser.add_argument('--lemma_cache', type=str, default='', help='Outdated parameter, DO NOT USE.')
 argparser.add_argument('--no_xpos', action="store_true", default=False, help='Outdated parameter, DO NOT USE.')
