@@ -10,7 +10,7 @@ class Pipeline:
         """ """
         self.job_counter=0
         self.done_jobs={}
-        self.max_q_size=10
+        self.max_q_size=5
         self.q_in=Queue(self.max_q_size) #where to send data to the whole pipeline
         self.q_out=self.q_in #where to receive data from the whole pipeline
         self.processes=[]
