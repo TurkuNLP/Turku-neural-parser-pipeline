@@ -4,7 +4,11 @@ A neural parsing pipeline for **segmentation, morphological tagging, dependency 
 ```
 LATEST:
 
+Dec 14, 2018: Faster lemmatizer, major updates for the lemmatizer making it considerably faster (no changes in accuracy).
+    --> Pipeline needs clean instalation (requirements also changed)!
+
 Dec 13, 2018: Memory leak fixed, should not accumulate RAM with large data streams anymore.
+
 ```
 
 ## Finnish neural dependency parser
@@ -78,9 +82,13 @@ All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and 
 
 # Running the parser -- short version
 
-In the basic streaming mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as:
+In the basic streaming mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as (with GPU lemmatizer):
 
     cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
+    
+or (with CPU lemmatizer)
+
+    cat myfile.txt | python3 full_pipeline_stream.py --gpu -1 --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
 
 
 # Running the parser -- long version
@@ -94,7 +102,7 @@ The parser has these properties:
 
 ## Metadata in input
 
-In the input data, all lines which start with `###C:` are treated as metadata and will be passed through the pipeline unmodified, and attached in the conllu output to the following sentence. This is an easy way to pass metadata through the pipeline. Note that since the conllu format attaches metadata to sentences, the last line of a file cannot be the `###C:` comment. It is fine to have several comment lines one after another.
+In the input data, all lines which start with `###C:` are treated as metadata and will be passed through the pipeline unmodified, and attached in the conllu output to the following sentence. This is an easy way to pass metadata through the pipeline, also through tokenizer and sentence splitting. Note that since the conllu format attaches metadata to sentences, the last line of a file cannot be the `###C:` comment. It is fine to have several comment lines one after another.
 
 ## Pipelines
 
@@ -129,9 +137,9 @@ For those who wish to hack the pipelines.yaml file. You can add `extraoptions` t
 
 # Speed
 
-Without lemmatization, the throughput of the parser is on the order of 250 sentences a second on a GPU. On my laptop CPU I was able to run approx. 58 sentences/second.
+**GPU:** The throughput of the full pipeline is on the order of 100 trees/sec on NVIDIA GeForce GTX 1070. In the beginning the reported time looks worse as it includes also model loading, 100 trees/sek is measured after processing 50K sentences.
 
-Lemmatization is currently a major bottleneck and needs special treatment when the data sizes are massive. We are working on it. Currently the lemmatizer runs approx. 10 sentences/second on both CPU and GPU.
+**CPU:** On my laptop (8 cores + 8GB of RAM) I was able to run approx. 22 trees/sec (measured after processing 20K sentences).
 
 # Referencies
 
