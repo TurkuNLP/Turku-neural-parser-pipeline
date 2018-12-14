@@ -6,7 +6,7 @@ import time
 
 class Pipeline:
 
-    def __init__(self,steps):
+    def __init__(self,steps, extra_args=None):
         """ """
         self.job_counter=0
         self.done_jobs={}
@@ -16,7 +16,7 @@ class Pipeline:
         self.processes=[]
 
         for mod_name_and_params in steps:
-            self.add_step(mod_name_and_params)
+            self.add_step(mod_name_and_params, extra_args)
 
     def join(self):
         for p in self.processes:
@@ -28,10 +28,19 @@ class Pipeline:
                 return False
         return True
 
-    def add_step(self,module_name_and_params):
+    def add_step(self,module_name_and_params, extra_args):
         config=module_name_and_params.split()
         module_name=config[0]
         params=config[1:]
+
+        # collect extra arguments from command line meant for this particular module
+        if extra_args is not None: 
+            for _name, _value in extra_args.__dict__.items():
+                if _name.startswith(module_name):
+                    _modname,_argname=_name.split(".",1) # for example lemmatizer_mod.gpu
+                    params.append("--"+_argname)
+                    params.append(str(_value))
+
         mod=importlib.import_module(module_name)
         step_in=self.q_out
         self.q_out=Queue(self.max_q_size) #new pipeline end

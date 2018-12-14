@@ -53,13 +53,22 @@ def read_pipelines(fname):
 if __name__=="__main__":
     import argparse
     THISDIR=os.path.dirname(os.path.abspath(__file__))
+
     argparser = argparse.ArgumentParser(description='Parser pipeline')
-    argparser.add_argument('--conf-yaml', default=os.path.join(THISDIR,"pipelines.yaml"), help='YAML with pipeline configs. Default: parser_dir/pipelines.yaml')
-    argparser.add_argument('--pipeline', default="parse_plaintext", help='[DEPRECATED] Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
-    argparser.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
-    argparser.add_argument('--batch-lines', default=1000, type=int, help='Number of lines in a job batch. Default %(default)d, consider setting a higher value if using conllu input instead of raw text (maybe 5000 lines), and in case of running out of memory with raw text, try smaller values.')
-    argparser.add_argument('action', default=None, nargs='?', help="What to do. Either 'list' to lists pipelines or a pipeline name to parse, or nothing in which case the default parse_plaintext is used.")
+    general_group = argparser.add_argument_group(title='General', description='General pipeline arguments')
+    general_group.add_argument('--conf-yaml', default=os.path.join(THISDIR,"pipelines.yaml"), help='YAML with pipeline configs. Default: parser_dir/pipelines.yaml')
+    general_group.add_argument('--pipeline', default="parse_plaintext", help='[DEPRECATED] Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
+    general_group.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
+    general_group.add_argument('--batch-lines', default=1000, type=int, help='Number of lines in a job batch. Default %(default)d, consider setting a higher value if using conllu input instead of raw text (maybe 5000 lines), and try smaller values in case of running out of memory with raw text.')
+    general_group.add_argument('action', default=None, nargs='?', help="What to do. Either 'list' to lists pipelines or a pipeline name to parse, or nothing in which case the default parse_plaintext is used.")
+
+    lemmatizer_group = argparser.add_argument_group(title='lemmatizer_mod', description='Lemmatizer arguments')
+    lemmatizer_group.add_argument('--gpu', dest='lemmatizer_mod.gpu', type=int, default=0, help='GPU device id for the lemmatizer, if -1 use CPU')
+    lemmatizer_group.add_argument('--batch_size', dest='lemmatizer_mod.batch_size', type=int, default=100, help='Lemmatizer batch size')
+
+
     args = argparser.parse_args()
+
 
     pipelines=read_pipelines(args.conf_yaml)
 
@@ -79,7 +88,7 @@ if __name__=="__main__":
         args=argparser.parse_args(newoptions)
 
     pipeline.append("output_mod")
-    p=Pipeline(steps=pipeline)
+    p=Pipeline(steps=pipeline, extra_args=args)
 
     print("Waiting for input",file=sys.stderr,flush=True)
     line_buffer=[]
