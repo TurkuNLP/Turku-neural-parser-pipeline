@@ -4,6 +4,9 @@ A neural parsing pipeline for **segmentation, morphological tagging, dependency 
 ```
 LATEST:
 
+Dec 18, 2018: Finnish (fi_tdt) model updated, should be now faster as it includes a bigger precomputed lemma cache (no changes in accuracy)
+    --> run 'python3 fetch_models.py fi_tdt' to get the latest
+
 Dec 14, 2018: Faster lemmatizer, major updates for the lemmatizer making it considerably faster (no changes in accuracy).
     --> Pipeline needs clean instalation (requirements also changed)!
 
