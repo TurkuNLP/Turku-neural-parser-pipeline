@@ -11,7 +11,7 @@ For a quick test on the pre-made Finnish image:
 
 ## Ready-made images
 
-Several ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser) where Docker can find them automatically.
+Several ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically.
 
 * the `<language>-cpu-plaintext-stdin` images are most useful to one-off parse a text document on a standard computer without GPU acceleration. These are by far the easiest to use, but since the model is loaded every time you launch the parser, incuring a non-trivial startup delay, these images are not suitable for on-the-fly parsing
 * the `commonbase-cpu-latest` image contains the parser itself, but no models to save space, it is the basis for the language-specific images
