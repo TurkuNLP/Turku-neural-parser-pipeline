@@ -4,7 +4,7 @@ layout: default
 
 # Turku neural parser pipeline
 
-A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at http://universaldependencies.org/conll18/results.html.
+A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>.
 
 <div class="latest" markdown="1">
 LATEST:
@@ -42,66 +42,29 @@ MLAS       |     79.86 |     79.83 |     79.85 |     80.07
 BLEX       |     81.07 |     81.04 |     81.05 |     81.27
 ``` 
 
-# Docker
+# Docker Images
 
-Docker images are available, see the instructions [here](docker.html).
+The Docker images are an easy way to run the parser without installing all the dependencies. See the instructions [here](docker.html).
 
 # Installation
 
-## Prerequisites
+The installation of the parser, with its dependencies, is described [here](install.html)
 
-For Ubuntu-based systems, the pre-requisities are
+# Models
 
-    sudo apt install build-essential python3-dev python3-virtualenv python3-tk
-
-## Download the code
-
-Clone the parser as well as all of its submodules as follows:
-
-    git clone https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
-    cd Turku-neural-parser-pipeline
-    git submodule update --init --recursive
-
-## Setup Python environment
-
-We highly recommend that you make a virtual environment for the parser and install the `wheel` package:
-
-    python3 -m venv venv-parser-neural
-    source venv-parser-neural/bin/activate
-    pip3 install wheel
-
-Then you need to install the necessary libraries:
-
-    pip3 install -r requirements-gpu.txt
-
-or
-   
-    pip3 install -r requirements-cpu.txt
-
-## Install pytorch
-
-In case pytorch would not install correctly through pip, you may need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
-GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA.
-If you run on CPU and have no CUDA, then select None.
-
-1. Run the `commands which pytorch.org gives`
-2. Run yet `pip3 install torchtext` when (1) is ready and you're done
-
-## Download the models
-
-All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and you can use the following utility script to fetch the model you need:
-
-    python3 fetch_models.py fi_tdt
+The 82 models for all languages in the CoNLL-18 Shared Task are available for download. Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser or [here](docker.html#images-for-other-languages) for the Docker version of the parser.
 
 # Running the parser -- short version
 
+See [here](docker.html) for running the Docker version of the parser.
+
 In the basic streaming mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as (with GPU lemmatizer):
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
     
 or (with CPU lemmatizer)
 
-    cat myfile.txt | python3 full_pipeline_stream.py --gpu -1 --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
+    cat myfile.txt | python3 full_pipeline_stream.py --gpu -1 --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
 
 
 # Running the parser -- long version
@@ -110,8 +73,8 @@ The parser has these properties:
 
 * a long start-up cost when it's loading the models (see the server mode to prevent model reloading)
 * very fast when parsing large documents because of the mini-batch style of computing
-* efficient use of GPU, about 5x faster than the previous Finnish-dep-parser (which could not use GPU for anything)
-* transparent passing through metadata
+* efficient use of GPU, 5x faster than the previous Finnish-dep-parser (which could not use GPU for anything)
+* transparent handling of metadata
 
 ## Metadata in input
 
@@ -154,7 +117,7 @@ For those who wish to hack the pipelines.yaml file. You can add `extraoptions` t
 
 **CPU:** On my laptop (8 cores + 8GB of RAM) I was able to run approx. 22 trees/sec (measured after processing 20K sentences).
 
-# Referencies
+# References
 
 Main reference for the pipeline:
 ```
@@ -168,4 +131,4 @@ year={2018}
 }
 ```
 
-Other references TODO
+
