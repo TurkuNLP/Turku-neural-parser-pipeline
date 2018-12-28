@@ -6,17 +6,20 @@ layout: default
 
 For a quick test on the pre-made Finnish image:
 
-    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:finnish-cpu-plaintext-stdin > output.conllu
-    cat output.conllu
+    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:finnish-cpu-plaintext-stdin
+
+And for English:
+
+    echo "I don't have a goldfish." | docker run -i turkunlp/turku-neural-parser:english-cpu-plaintext-stdin
 
 ## Ready-made images
 
-Several ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically.
+Several ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically. Currently the ready-made images exist for Finnish and English.
 
 * the `<language>-cpu-plaintext-stdin` images are most useful to one-off parse a text document on a standard computer without GPU acceleration. These are by far the easiest to use, but since the model is loaded every time you launch the parser, incuring a non-trivial startup delay, these images are not suitable for on-the-fly parsing
 * the `commonbase-cpu-latest` image contains the parser itself, but no models to save space, it is the basis for the language-specific images
 
-### Finnish
+### Running from a ready-made image
 
 To simply test the parser:
 
@@ -28,7 +31,7 @@ To one-off parse a single file:
 
 ## Images for other languages
 
-Building a language-specific image should be straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline.
+Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline.
 
 Build the Docker image like so:
 
