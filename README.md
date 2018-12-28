@@ -1,12 +1,5 @@
-# Finnish-dep-parser-neural
-A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of prediction.
+# Turku-neural-parser-pipeline
+A new take on the trusty old Finnish-dep-parser with pretrained models for more than 50 languages. The current pipeline is fully neural and has a substantially better accuracy in all layers of prediction (segmentation, morphological tagging, syntax, lemmatization).
 
-## Installation
-```
-  git clone https://github.com/TurkuNLP/Finnish-dep-parser-neural.git
-  cd Finnish-dep-parser-neural
-  pip3 install -r requirements-cpu.txt
-  git submodule update --init --recursive
 
-  TODO: download models
-```
+Documentation: https://turkunlp.github.io/Turku-neural-parser-pipeline/

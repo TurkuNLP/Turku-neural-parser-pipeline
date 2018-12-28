@@ -4,9 +4,12 @@ keras
 h5py
 matplotlib
 flask
-torch==0.3.1
-torchtext==0.2.3
+
+torch==0.4.1
+torchtext==0.3.1
 torchvision==0.2.1
 ufal.udpipe
 pyyaml
 numpy
+configargparse
+

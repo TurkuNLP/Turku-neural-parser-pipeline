@@ -6,19 +6,17 @@ import time
 
 class Pipeline:
 
-    def __init__(self,steps):
+    def __init__(self,steps, extra_args=None):
         """ """
         self.job_counter=0
         self.done_jobs={}
-        self.max_q_size=10
+        self.max_q_size=5
         self.q_in=Queue(self.max_q_size) #where to send data to the whole pipeline
         self.q_out=self.q_in #where to receive data from the whole pipeline
         self.processes=[]
 
-        steps.append("output_mod")
-
         for mod_name_and_params in steps:
-            self.add_step(mod_name_and_params)
+            self.add_step(mod_name_and_params, extra_args)
 
     def join(self):
         for p in self.processes:
@@ -30,18 +28,31 @@ class Pipeline:
                 return False
         return True
 
-    def add_step(self,module_name_and_params):
+    def add_step(self,module_name_and_params, extra_args):
         config=module_name_and_params.split()
         module_name=config[0]
         params=config[1:]
+
+        # collect extra arguments from command line meant for this particular module
+        if extra_args is not None: 
+            for _name, _value in extra_args.__dict__.items():
+                if _name.startswith(module_name):
+                    _modname,_argname=_name.split(".",1) # for example lemmatizer_mod.gpu
+                    params.append("--"+_argname)
+                    params.append(str(_value))
+
         mod=importlib.import_module(module_name)
         step_in=self.q_out
         self.q_out=Queue(self.max_q_size) #new pipeline end
         args=mod.argparser.parse_args(params)
         process=Process(target=mod.launch,args=(args,step_in,self.q_out))
+        process.daemon=True
         process.start()
         self.processes.append(process)
 
+    def send_final(self):
+        self.q_in.put(("FINAL",""))
+        
     def put(self,txt,final=False):
         """Start parsing a job, return id which can be used to retrieve the result"""
         batch_id=hashlib.md5((str(random.random())+txt).encode("utf-8")).hexdigest()

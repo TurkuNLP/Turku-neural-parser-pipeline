@@ -3,6 +3,7 @@ import os
 import flask
 
 from pipeline import Pipeline
+from full_pipeline_stream import read_pipelines
 
 app=flask.Flask(__name__)
 
@@ -35,8 +36,7 @@ argparser.add_argument('--pipeline', default="fi_tdt_all", help='Name of the pip
 argparser.add_argument('ACTION', default=None, nargs="?", help='`serve` to open http server, `interactive` goes interactive mode. Default: do nothing and exit')
 args = argparser.parse_args()
 
-with open(args.conf_yaml) as f:
-    pipelines=yaml.load(f)
+pipelines = read_pipelines(args.conf_yaml)
 
 p=Pipeline(steps=pipelines[args.pipeline])
 
