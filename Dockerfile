@@ -1,10 +1,9 @@
-FROM python:3.6
-ARG MODEL=fi_tdt
+# STDIN stream version, running a particular language model, and a particular pipeline
+FROM turkunlp/turku-neural-parser:commonbase-cpu-latest as tnpp_stream_cpu
 WORKDIR /app
-COPY requirements-*.txt ./
-RUN pip3 install --no-cache-dir -r requirements-cpu.txt
-COPY fetch_models.py ./
+ARG MODEL=fi_tdt
+ARG PIPELINE=parse_plaintext
+ENV TNPP_MODELNAME ${MODEL}
+ENV TNPP_PIPELINE ${PIPELINE}
 RUN python3 fetch_models.py $MODEL
-COPY . .
-ENV MODEL ${MODEL}
-CMD python full_pipeline_stream.py --conf "models_${MODEL}/pipelines.yaml" --gpu -1 parse_plaintext
+CMD python full_pipeline_stream.py --conf "models_${TNPP_MODELNAME}/pipelines.yaml" --gpu -1 "${TNPP_PIPELINE}"
