@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Docker
 
 For a quick test on the pre-made Finnish image:

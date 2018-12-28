@@ -1,0 +1,15 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.inner {
+    max-width: 75%;
+}
+
+.latest {
+    background-color: #fff;
+    //box-shadow: 0 0 10px rgba(0,0,0,.1);
+    padding: 5px;
+    border: 2px solid #111111;
+}
