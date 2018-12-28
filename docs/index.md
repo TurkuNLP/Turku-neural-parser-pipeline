@@ -1,4 +1,5 @@
 # Turku neural parser pipeline
+
 A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at http://universaldependencies.org/conll18/results.html.
 
 ```
@@ -14,9 +15,9 @@ Dec 13, 2018: Memory leak fixed, should not accumulate RAM with large data strea
 
 ```
 
-## Finnish neural dependency parser
+## Finnish
 
-A new take on the trusty old Finnish-dep-parser. The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation. These are the current numbers, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. **This is the "fi_tdt" model distributed with the parser**
+The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation, compared to the old Finnish-dep-parser, used by many. These are the current numbers for Finnish, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. **This is the "fi_tdt" model distributed with the parser**
 
 ```
 Metric     | Precision |    Recall |  F1 Score | AligndAcc
@@ -35,6 +36,10 @@ CLAS       |     85.24 |     85.21 |     85.22 |     85.46
 MLAS       |     79.86 |     79.83 |     79.85 |     80.07
 BLEX       |     81.07 |     81.04 |     81.05 |     81.27
 ``` 
+
+# Docker
+
+Docker images are available, see the instructions [here](docker.html).
 
 # Installation
 
