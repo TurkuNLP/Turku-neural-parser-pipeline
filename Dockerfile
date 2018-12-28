@@ -7,4 +7,4 @@ COPY fetch_models.py ./
 RUN python3 fetch_models.py $MODEL
 COPY . .
 ENV MODEL ${MODEL}
-CMD python full_pipeline_stream.py --conf "models_${MODEL}/pipelines.yaml" parse_plaintext
+CMD python full_pipeline_stream.py --conf "models_${MODEL}/pipelines.yaml" --gpu -1 parse_plaintext
