@@ -2,7 +2,7 @@
 
 A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at http://universaldependencies.org/conll18/results.html.
 
-```
+<div class="highlight">
 LATEST:
 
 Dec 28, 2018: Docker images available. See the [instructions here](docker.html).
@@ -15,7 +15,7 @@ Dec 14, 2018: Faster lemmatizer, major updates for the lemmatizer making it cons
 
 Dec 13, 2018: Memory leak fixed, should not accumulate RAM with large data streams anymore.
 
-```
+</div>
 
 ## Finnish
 
