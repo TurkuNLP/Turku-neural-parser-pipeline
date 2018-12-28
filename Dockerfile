@@ -1,5 +1,5 @@
 # STDIN stream version, running a particular language model, and a particular pipeline
-FROM turkunlp/turku-neural-parser:commonbase-cpu-latest as tnpp_stream_cpu
+FROM turkunlp/turku-neural-parser:commonbase-cpu-latest
 WORKDIR /app
 ARG MODEL=fi_tdt
 ARG PIPELINE=parse_plaintext
