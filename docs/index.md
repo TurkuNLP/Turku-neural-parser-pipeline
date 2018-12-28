@@ -5,6 +5,8 @@ A neural parsing pipeline for **segmentation, morphological tagging, dependency 
 ```
 LATEST:
 
+Dec 28, 2018: Docker images available. See the [instructions here](docker.html).
+
 Dec 18, 2018: Finnish (fi_tdt) model updated, should be now faster as it includes a bigger precomputed lemma cache (no changes in accuracy)
     --> run 'python3 fetch_models.py fi_tdt' to get the latest
 
