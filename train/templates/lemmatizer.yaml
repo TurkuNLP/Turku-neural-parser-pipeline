@@ -1,0 +1,7 @@
+default:
+  train: placeholder
+  dev: placeholder
+  model_dir: placeholder
+  basic: true
+  preprocess_parameters: -src_words_min_frequency 5 -tgt_words_min_frequency 5
+  train_parameters: -gpu_ranks 0 -dropout 0.3 -optim adam -learning_rate 0.0005 -learning_rate_decay 0.9 -start_decay_steps 40000 -encoder_type brnn -batch_size 64 -train_steps 70000 -valid_steps 10000 -save_checkpoint_steps 10000

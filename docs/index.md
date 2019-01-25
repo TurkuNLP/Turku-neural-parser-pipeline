@@ -50,6 +50,10 @@ The Docker images are an easy way to run the parser without installing all the d
 
 The installation of the parser, with its dependencies, is described [here](install.html)
 
+# Training
+
+Training new models is described [here](training.html)
+
 # Models
 
 The 82 models for all languages in the CoNLL-18 Shared Task are available for download. Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser or [here](docker.html#images-for-other-languages) for the Docker version of the parser.

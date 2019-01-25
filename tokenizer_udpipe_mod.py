@@ -4,6 +4,7 @@ import argparse
 import numpy as np
 import pickle
 import re
+import os
 try:
     import ufal.udpipe as udpipe
 except:
@@ -18,6 +19,9 @@ class UDPipeTokenizerWrapper():
         """
         Tokenizer model loading etc goes here
         """
+        if not os.path.isfile(args.model):
+            print("Tokenizer model missing", file=sys.stderr)
+            sys.exit(-1)
         self.model = udpipe.Model.load(args.model)
         if args.presegmented:
             self.pipeline = udpipe.Pipeline(self.model,"tokenizer=presegmented","none","none","conllu")
