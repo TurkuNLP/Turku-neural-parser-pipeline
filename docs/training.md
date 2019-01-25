@@ -14,7 +14,7 @@ This will train the tagger, parser and lemmatizer models, and save everything in
 
 **GPU:** With default parameters, lemmatizer (pytorch) is using GPU with id 0, remove `-gpu_rank 0` parameter from `train/templates/lemmatizer.yaml` if you wish to run on CPU (but note that CPU training may be very slow).
 
-## Tokenizer
+### Tokenizer
 
 **Currently, the tokenizer model must be trained separately by using UDPipe v1.2.0**, see UDPipe installation instructions [here](http://ufal.mff.cuni.cz/udpipe/install). After downloading/installing UDPipe, a tokenizer model can be trained with:
 
