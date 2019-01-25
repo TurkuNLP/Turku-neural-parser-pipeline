@@ -2,6 +2,8 @@
 layout: default
 ---
 
+[back](index.html)
+
 # Training
 
 ## Training new models --- short version
