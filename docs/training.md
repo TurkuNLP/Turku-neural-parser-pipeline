@@ -26,7 +26,7 @@ After training, the tokenizer model must be copied into the `models_%name/Tokeni
 
 ## Running the parser with your new models
 
-Now you should be able to run the pipeline with your new models:
+Now you should be able to run the pipeline with your new models (use `--gpu -1` for running on CPU):
 
     cat myfile.txt | python3 full_pipeline_stream.py --conf models_%name/pipelines.yaml parse_plaintext > myfile.conllu
 
