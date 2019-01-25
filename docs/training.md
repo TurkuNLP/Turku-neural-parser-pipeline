@@ -12,7 +12,7 @@ The default command for training the parser pipeline is:
 
 This will train the tagger, parser and lemmatizer models, and save everything into a directory `models_%name`. Training and development data must be in the CoNLL-U format, and pre-trained word embedding must be in the word2vec text format. Default parameters for each component are defined in the `train/templates/` directory, you are free to tune the hyperparameter values in these config files.
 
-**GPU:** With default parameters, lemmatizer (pytorch) is using GPU with id 0, remove `-gpu_rank 0` parameter if you wish to run on CPU (but note that CPU training may be very slow).
+**GPU:** With default parameters, lemmatizer (pytorch) is using GPU with id 0, remove `-gpu_rank 0` parameter from `train/templates/lemmatizer.yaml` if you wish to run on CPU (but note that CPU training may be very slow).
 
 ## Tokenizer
 
