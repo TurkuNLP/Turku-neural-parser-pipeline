@@ -134,5 +134,15 @@ location = "Brussels, Belgium",
 year={2018}
 }
 ```
+Lemmatizer:
+```
+@article{kanerva2019universal,
+    title={Universal Lemmatizer: A Sequence to Sequence Model for Lemmatizing Universal Dependencies Treebanks},
+    author={Jenna Kanerva and Filip Ginter and Tapio Salakoski},
+    journal={arXiv preprint arXiv:1902.00972},
+    year={2019}
+}
+```
+
 
 
