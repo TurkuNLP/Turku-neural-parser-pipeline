@@ -19,10 +19,10 @@ def parse_get():
 @app.route("/",methods=["POST"])
 def parse_post():
     global p
-    txt=flask.request.json
+    txt=flask.request.get_data(as_text=True)
     #print("Parsing:",txt,file=sys.stderr,flush=True)
     if not txt:
-        return """You need to post your data as a single string and specify Content-Type: application/json. An example request would be curl --header "Content-Type: application/json" --request POST --data '"Tämä on testilause"' http://localhost:7689\n\n\n""",400
+        return """You need to post your data as a single string. An example request would be curl --request POST --data 'Tämä on testilause' http://localhost:7689\n\n\n""",400
     else:
         res=parse(txt,p)
     return flask.Response(res,mimetype="text/plain; charset=utf-8")
