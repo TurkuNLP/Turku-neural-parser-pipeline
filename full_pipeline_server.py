@@ -9,7 +9,7 @@ app=flask.Flask(__name__)
 
 @app.route("/",methods=["GET"])
 def parse_get():
-    global p
+    global p, args
     txt=flask.request.args.get("text")
     if not txt:
         return "You need to specify ?text=sometext",400
@@ -18,9 +18,10 @@ def parse_get():
 
 @app.route("/",methods=["POST"])
 def parse_post():
-    global p
+    global p,args
     txt=flask.request.get_data(as_text=True)
-    #print("Parsing:",txt,file=sys.stderr,flush=True)
+    if args.max_char>0:
+        txt=txt[:args.max_char]
     if not txt:
         return """You need to post your data as a single string. An example request would be curl --request POST --data 'Tämä on testilause' http://localhost:7689\n\n\n""",400
     else:
@@ -53,7 +54,8 @@ if __name__=="__main__":
     general_group.add_argument('action', default=None, nargs='?', help="What to do. Either 'list' to lists pipelines or a pipeline name to parse, or nothing in which case the default parse_plaintext is used.")
     general_group.add_argument('--port',default=7689,type=int,help="Port at which to run. Default %(default)d")
     general_group.add_argument('--host',default="localhost",help="Host on which to bind. Default %(default)s")
-
+    general_group.add_argument('--max-char', default=0, type=int, help='Number of chars maximum in a job batch. Cuts longer. Zero for no limit. Default %(default)d')
+    
     lemmatizer_group = argparser.add_argument_group(title='lemmatizer_mod', description='Lemmatizer arguments')
     lemmatizer_group.add_argument('--gpu', dest='lemmatizer_mod.gpu', type=int, default=0, help='GPU device id for the lemmatizer, if -1 use CPU')
     lemmatizer_group.add_argument('--batch_size', dest='lemmatizer_mod.batch_size', type=int, default=100, help='Lemmatizer batch size')
