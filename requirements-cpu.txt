@@ -11,4 +11,4 @@ torchtext==0.3.1
 torchvision==0.2.1
 ufal.udpipe
 configargparse
-
+flask
