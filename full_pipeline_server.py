@@ -1,7 +1,7 @@
 import yaml
 import os
 import flask
-
+import sys
 from pipeline import Pipeline
 from full_pipeline_stream import read_pipelines
 
@@ -15,6 +15,20 @@ def parse_get():
         return "You need to specify ?text=sometext",400
     res=parse(txt,p)
     return flask.Response(res,mimetype="text/plain; charset=utf-8")
+
+@app.route("/",methods=["POST"])
+def parse_post():
+    global p
+    txt=flask.request.json
+    #print("Parsing:",txt,file=sys.stderr,flush=True)
+    if not txt:
+        return """You need to post your data as a single string and specify Content-Type: application/json. An example request would be curl --header "Content-Type: application/json" --request POST --data '"Tämä on testilause"' http://localhost:7689\n\n\n""",400
+    else:
+        res=parse(txt,p)
+    return flask.Response(res,mimetype="text/plain; charset=utf-8")
+    
+    
+
 
 
 def parse(txt,p):
