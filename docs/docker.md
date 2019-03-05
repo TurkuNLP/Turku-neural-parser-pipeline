@@ -4,6 +4,10 @@ layout: default
 
 # Docker
 
+We provide two flavors of Docker images: one which parses text from standard input and exits. Since it loads the model every time you run it, it is not suitable for repeated parsing of small chunks of text. The other flavor is server mode, which starts, loads the model and listens on a port where you can feed in chunks of text without incurring the overhead of model reloading.
+
+# One-shot parser images
+
 For a quick test on the pre-made Finnish image:
 
     echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:finnish-cpu-plaintext-stdin
@@ -41,4 +45,22 @@ And then you can parse French like so:
 
     echo "Les carottes sont cuites" | docker run -i my_french_parser_plaintext
 
+# Server mode images
 
+These are built much like the one-shot images, and we provide the English and Finnish images on DockerHub. The started containers listen to POST requests on port number 7689. Run like such:
+
+```
+docker run -d -p 15000:7689 turkunlp/turku-neural-parser:finnish-cpu-plaintext-server
+```
+
+This maps the port at which the Docker image listens to your localhost port 15000 (any free port number will do of course) so you can parse as follows:
+
+```
+curl --request POST --data "Tämä on esimerkkilause" http://localhost:15000 > parsed.conllu
+```
+
+or
+
+```
+curl --request POST --data @input_text.txt http://localhost:15000 > parsed.conllu
+```
