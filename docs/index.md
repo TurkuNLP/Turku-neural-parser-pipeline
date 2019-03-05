@@ -9,6 +9,9 @@ A neural parsing pipeline for **segmentation, morphological tagging, dependency 
 <div class="latest" markdown="1">
 LATEST:
 
+Mar 05, 2019: **Server-mode docker images** available for parsing without re-loading the model between requests. See the 
+[instructions here](docker.html)
+
 Dec 28, 2018: **Docker images** available. See the [instructions here](docker.html).
 
 Dec 18, 2018: **Finnish model updated** (fi_tdt), should be now faster as it includes a bigger precomputed lemma cache (no changes in accuracy)
