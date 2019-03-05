@@ -4,9 +4,13 @@ layout: default
 
 # Docker
 
-<span style="background-color:red">OSX users:</span> Docker at OSX is configured with a default tight memory limit which needs to be increased. Reaching this limit manifests itself by the Docker container hanging indefinitely. See <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/15">issue #15</a>.
 
 We provide two flavors of Docker images: one which parses text from standard input and exits. Since it loads the model every time you run it, it is not suitable for repeated parsing of small chunks of text. The other flavor is server mode, which starts, loads the model and listens on a port where you can feed in chunks of text without incurring the overhead of model reloading.
+
+
+<div class="alert" markdown="1">
+OSX users:</span> Docker at OSX is configured with a default tight memory limit which needs to be increased. Reaching this limit manifests itself by the Docker container hanging indefinitely. See <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/15">issue #15</a>.
+</div>
 
 # One-shot parser images
 
