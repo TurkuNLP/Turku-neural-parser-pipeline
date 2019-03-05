@@ -9,7 +9,9 @@ We provide two flavors of Docker images: one which parses text from standard inp
 
 
 <div class="alert" markdown="1">
-**Docker on OSX** is configured with a default tight memory limit which needs to be increased. Reaching this limit manifests itself by the Docker container hanging indefinitely. See <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/15">issue #15</a>.
+##Docker on OSX
+
+Docker on OSX is configured with a default tight memory limit which needs to be increased. Reaching this limit manifests itself by the Docker container hanging indefinitely. See <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/15">issue #15</a>.
 </div>
 
 # One-shot parser images
