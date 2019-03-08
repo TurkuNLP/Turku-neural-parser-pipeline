@@ -64,11 +64,11 @@ docker run -d -p 15000:7689 turkunlp/turku-neural-parser:finnish-cpu-plaintext-s
 This maps the port at which the Docker image listens to your localhost port 15000 (any free port number will do of course) so you can parse as follows:
 
 ```
-curl --request POST --data "Tämä on esimerkkilause" http://localhost:15000 > parsed.conllu
+curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-binary "Tämä on esimerkkilause" http://localhost:15000 > parsed.conllu
 ```
 
 or
 
 ```
-curl --request POST --data @input_text.txt http://localhost:15000 > parsed.conllu
+curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-binary @input_text.txt http://localhost:15000 > parsed.conllu
 ```
