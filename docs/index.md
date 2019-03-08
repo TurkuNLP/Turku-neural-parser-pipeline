@@ -108,11 +108,19 @@ Other pipelines (which skip some of these steps etc) can be built easily by mimi
 
 In the stream mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it the file with pipelines and you need to tell it which pipeline to run (parse_plaintext is the default). So you can run the parser as:
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml --pipeline parse_plaintext > myfile.conllu
+    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
 
 ## Server mode
 
-Docs TODO
+See [here](docker.html) for running the Docker version of the parser server.
+
+In the server mode, the parsing models are loaded only once, and kept in memory as long as the server is running. Start the server by running (add `--gpu -1` for CPU inference):
+    
+    python full_pipeline_server.py --port 7689 --conf models_fi_tdt/pipelines.yaml parse_plaintext
+
+When the server is running, you can parse data with curl requests:
+
+    curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-binary "Tämä on esimerkkilause" http://localhost:7689
 
 # pipelines.yaml file
 
