@@ -128,7 +128,7 @@ For those who wish to hack the pipelines.yaml file. You can add `extraoptions` t
 
 # Speed
 
-**GPU:** The throughput of the full pipeline is on the order of 100 trees/sec on NVIDIA GeForce GTX 1070. In the beginning the reported time looks worse as it includes also model loading, 100 trees/sek is measured after processing 50K sentences.
+**GPU:** The throughput of the full pipeline is on the order of 218 trees/sec on NVIDIA GeForce GTX 1070. In the beginning the reported time looks worse as it includes also model loading, the maximum 218 trees/sek is measured after processing 300K sentences (after about 30 min of running).
 
 **CPU:** On my laptop (8 cores + 8GB of RAM) I was able to run approx. 22 trees/sec (measured after processing 20K sentences).
 
