@@ -44,7 +44,7 @@ def non_blocking_batch(inp,timeout=0.2,batch_lines=10000,wait_for_empty_line=Fal
 def read_pipelines(fname):
     absdir=os.path.dirname(os.path.abspath(fname))
     with open(fname) as f:
-        pipelines=yaml.load(f)
+        pipelines=yaml.load(f, Loader=yaml.BaseLoader)
     for pipeline_name,component_list in pipelines.items():
         new_component_list=[c.format(thisdir=absdir) for c in component_list]
         pipelines[pipeline_name]=new_component_list
