@@ -131,7 +131,7 @@ def _encode(text):
     return text if sys.version_info[0] >= 3 or not isinstance(text, unicode) else text.encode("utf-8")
 
 # Load given CoNLL-U file into internal representation
-def load_conllu(file):
+def load_conllu(file, args):
     # Internal representation classes
     class UDRepresentation:
         def __init__(self):
@@ -192,21 +192,23 @@ def load_conllu(file):
             sentence_start = len(ud.words)
         if not line:
             # Add parent and children UDWord links and check there are no cycles
-            def process_word(word):
+            def process_word(word, args):
                 if word.parent == "remapping":
                     raise UDError("There is a cycle in a sentence")
                 if word.parent is None:
+                    if args.skip_parse:
+                        return
                     head = int(word.columns[HEAD])
                     if head < 0 or head > len(ud.words) - sentence_start:
                         raise UDError("HEAD '{}' points outside of the sentence".format(_encode(word.columns[HEAD])))
                     if head:
                         parent = ud.words[sentence_start + head - 1]
                         word.parent = "remapping"
-                        process_word(parent)
+                        process_word(parent, args)
                         word.parent = parent
 
             for word in ud.words[sentence_start:]:
-                process_word(word)
+                process_word(word, args)
             # func_children cannot be assigned within process_word
             # because it is called recursively and may result in adding one child twice.
             for word in ud.words[sentence_start:]:
@@ -214,7 +216,7 @@ def load_conllu(file):
                     word.parent.functional_children.append(word)
 
             # Check there is a single root node
-            if len([word for word in ud.words[sentence_start:] if word.parent is None]) != 1:
+            if not args.skip_parse and len([word for word in ud.words[sentence_start:] if word.parent is None]) != 1:
                 raise UDError("There are multiple roots in a sentence")
 
             # End the sentence
@@ -269,8 +271,11 @@ def load_conllu(file):
             try:
                 head_id = int(columns[HEAD])
             except:
-                raise UDError("Cannot parse HEAD '{}'".format(_encode(columns[HEAD])))
-            if head_id < 0:
+                if args.skip_parse:
+                    head_id = None
+                else:
+                    raise UDError("Cannot parse HEAD '{}'".format(_encode(columns[HEAD])))
+            if head_id is not None and head_id < 0:
                 raise UDError("HEAD cannot be negative")
 
             ud.words.append(UDWord(ud.tokens[-1], columns, is_multiword=False))
@@ -281,7 +286,7 @@ def load_conllu(file):
     return ud
 
 # Evaluate the gold and system treebanks (loaded using load_conllu).
-def evaluate(gold_ud, system_ud):
+def evaluate(gold_ud, system_ud, args):
     class Score:
         def __init__(self, gold_total, system_total, correct, aligned_total=None):
             self.correct = correct
@@ -292,6 +297,15 @@ def evaluate(gold_ud, system_ud):
             self.recall = correct / gold_total if gold_total else 0.0
             self.f1 = 2 * correct / (system_total + gold_total) if system_total + gold_total else 0.0
             self.aligned_accuracy = correct / aligned_total if aligned_total else aligned_total
+        def zero(self):
+            self.correct = 0.0
+            self.gold_total = 0.0
+            self.system_total = 0.0
+            self.aligned_total = 0.0
+            self.precision = 0.0
+            self.recall = 0.0
+            self.f1 = 0.0
+            self.aligned_accuracy = 0.0
     class AlignmentWord:
         def __init__(self, gold_word, system_word):
             self.gold_word = gold_word
@@ -450,7 +464,7 @@ def evaluate(gold_ud, system_ud):
     alignment = align_words(gold_ud.words, system_ud.words)
 
     # Compute the F1-scores
-    return {
+    results = {
         "Tokens": spans_score(gold_ud.tokens, system_ud.tokens),
         "Sentences": spans_score(gold_ud.sentences, system_ud.sentences),
         "Words": alignment_score(alignment),
@@ -472,16 +486,24 @@ def evaluate(gold_ud, system_ud):
                                 filter_fn=lambda w: w.is_content_deprel),
     }
 
+    if args.skip_parse: # remove misleading parse-tree results
+        results["UAS"].zero()
+        results["LAS"].zero()
+        results["CLAS"].zero()
+        results["MLAS"].zero()
+        results["BLEX"].zero()
+    return results
 
-def load_conllu_file(path):
+
+def load_conllu_file(path, args):
     _file = open(path, mode="r", **({"encoding": "utf-8"} if sys.version_info >= (3, 0) else {}))
-    return load_conllu(_file)
+    return load_conllu(_file, args)
 
 def evaluate_wrapper(args):
     # Load CoNLL-U files
-    gold_ud = load_conllu_file(args.gold_file)
-    system_ud = load_conllu_file(args.system_file)
-    return evaluate(gold_ud, system_ud)
+    gold_ud = load_conllu_file(args.gold_file, args)
+    system_ud = load_conllu_file(args.system_file, args)
+    return evaluate(gold_ud, system_ud, args)
 
 def main():
     # Parse arguments
@@ -494,6 +516,8 @@ def main():
                         help="Print all metrics.")
     parser.add_argument("--counts", "-c", default=False, action="store_true",
                         help="Print raw counts of correct/gold/system/aligned words instead of prec/rec/F1 for all metrics.")
+    parser.add_argument("--skip-parse", default=False, action="store_true",
+                        help="Skip parse tree and evaluate only segmentation/morphology/lemmas.")
     args = parser.parse_args()
 
     # Evaluate
