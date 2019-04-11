@@ -83,9 +83,15 @@ The parser has these properties:
 * efficient use of GPU, 5x faster than the previous Finnish-dep-parser (which could not use GPU for anything)
 * transparent handling of metadata
 
+## Input and Output formats
+
+When running with default mode (`parse_plaintext`) the input must **utf-8** encoded plain text. Paragraph and document boundaries should be marked with an empty line (note that single line break does not indicate text boundary, and lines separated with a single line break can be merged by the tokenizer).
+
+The output format of the parser is CoNLL-U, described in detail [here](https://universaldependencies.org/format.html).
+
 ## Metadata in input
 
-In the input data, all lines which start with `###C:` are treated as metadata and will be passed through the pipeline unmodified, and attached in the conllu output to the following sentence. This is an easy way to pass metadata through the pipeline, also through tokenizer and sentence splitting. Note that since the conllu format attaches metadata to sentences, the last line of a file cannot be the `###C:` comment. It is fine to have several comment lines one after another.
+In the input data, all lines which start with `###C:` are treated as metadata and will be passed through the pipeline unmodified, and attached in the conllu output to the following sentence. This is an easy way to pass metadata through the pipeline, also through tokenizer and sentence splitting. This is especially useful for example including any document level information (document boundaries, source url, timestamps etc.). Note that since the conllu format attaches metadata to sentences, the last line of a file cannot be the `###C:` comment. It is fine to have several comment lines one after another.
 
 ## Pipelines
 
