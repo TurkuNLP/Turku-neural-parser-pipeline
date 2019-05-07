@@ -41,6 +41,10 @@ def launch(args,q_in,q_out):
             if len(sent)>args.max_sent_len:
                 comments.append("###TRIMMED_BY_PARSER FROM ORIGINAL OF {} WORDS".format(len(sent)))
                 sent=sent[:args.max_sent_len]
+            for i,token in enumerate(sent):
+                if len(token[FORM])>args.max_token_len:
+                    comments.append("###TOKEN {tid} TRIMMED_BY_PARSER FROM ORIGINAL OF {l} CHARACTERS | ORIG_TOKEN={orig}".format(tid=str(i+1), l=len(token[FORM]), orig=token[FORM]))
+                    sent[i][FORM]=token[FORM][:args.max_token_len]
             if comments:
                 print("\n".join(comments),file=cache)
             for cols in sent:
@@ -52,5 +56,6 @@ def launch(args,q_in,q_out):
     
 argparser = argparse.ArgumentParser(description='Trims sentence to a max length, protection against super-rare memory errors')
 argparser.add_argument('--max_sent_len', default=100,type=int, help='Maximum sentence length. Default: %(default)d')
+argparser.add_argument('--max_token_len', default=100,type=int, help='Maximum token length. Default: %(default)d')
 
 
