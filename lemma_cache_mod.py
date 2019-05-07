@@ -7,8 +7,12 @@ import http.server
 import urllib
 import dummy_handler
 import argparse
+import re
 
 ID,FORM,LEMMA,UPOS,XPOS,FEAT,HEAD,DEPREL,DEPS,MISC=range(10)
+
+url_regex = re.compile("((https?|ftp)://|www\.)", re.IGNORECASE)
+email_regex = re.compile("[^@,:]+@[^@,:]+\.[^@,:]+", re.IGNORECASE)
 
 def read_conllu(f):
     sent=[]
@@ -39,6 +43,7 @@ class LemmaCacheWrapper():
         # init lemma cache, comes pre-computed with the model
         self.cache={} # (form, upos, xpos, feats) -> lemma  
         self.read_cache(args.lemma_cache)
+        self.lemmatize_url_and_email=args.lemmatize_url_and_email
         pass
 
     def read_cache(self, cache_file):
@@ -47,6 +52,13 @@ class LemmaCacheWrapper():
             for line in f:
                 form, upos, xpos, feats, lemma = line.strip().split("\t")
                 self.cache[(form, upos, xpos, feats)]=lemma
+
+    def is_url_or_email(self, word):
+        if re.match(url_regex, word):
+            return True
+        if re.fullmatch(email_regex, word):
+            return True
+        return False
 
     def lemmatize_batch(self, conllu_batch):
 
@@ -75,6 +87,12 @@ class LemmaCacheWrapper():
                     output_lines.append("\t".join(t for t in cols))
                     lemmatized+=1
                     continue
+                if self.lemmatize_url_and_email==False and self.is_url_or_email(cols[FORM]): # simple copy
+                    cols[LEMMA]=cols[FORM]
+                    output_lines.append("\t".join(t for t in cols))
+                    lemmatized+=1
+                    continue
+
                 # lemma not in cache, pass empty lemma for next module
                 output_lines.append("\t".join(t for t in cols))
             output_lines.append("")
@@ -102,3 +120,4 @@ def launch(args,q_in,q_out):
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text using precomputed lemma cache (comes together with the actual lemma model)')
 argparser.add_argument('--lemma_cache', type=str, default='', help='Lemma cache file')
+argparser.add_argument('--lemmatize_url_and_email', action="store_true", default=False, help='Lemmatize also URLs and emails (default: False -- copy form into lemma field)')
