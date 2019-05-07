@@ -34,11 +34,16 @@ or
    
     pip3 install -r requirements-cpu.txt
 
-## Install pytorch
+## Tensorflow and pytorch
+
+In case default versions of Tensorflow or Pytorch do not match your CUDA installation, it makes sense to install those packages separately.
+
+You can install an older or newer version of tensorflow by specifying the version number when running pip (parser is tested to work at least with 1.5.0 -- 1.12.2):
+
+    pip3 install tensorflow-gpu==1.5.0
 
 In case pytorch would not install correctly through pip, you may need to install PyTorch by selecting the appropriate options from https://pytorch.org/. For a typical
-GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA.
-If you run on CPU and have no CUDA, then select None.
+GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" matching the version of your python and CUDA. If you run on CPU and have no CUDA, then select None.
 
 1. Run the `commands which pytorch.org gives`
 2. Run yet `pip3 install torchtext` when (1) is ready and you're done
