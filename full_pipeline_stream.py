@@ -5,41 +5,42 @@ import os
 import yaml
 import time
 import gzip
+import re
 
-def non_blocking_batch(inp,timeout=0.2,batch_lines=10000,wait_for_empty_line=False):
-    line_buffer=[]
-    #Feeds input
-    while True:
-        ready_to_read=select.select([inp], [], [], timeout)[0] #check whether f is ready to be read, wait at least timeout (otherwise we run a crazy fast loop)
-        if not ready_to_read:
-            # Stdin is not ready, yield what we've got, if anything
-            if line_buffer:
-                print("Yielding on timeout",len(line_buffer),"lines",file=sys.stderr,flush=True)
-                yield "".join(line_buffer)
-                line_buffer=[]
-            continue #next try
+# def non_blocking_batch(inp,timeout=0.2,batch_lines=10000,wait_for_empty_line=False):
+#     line_buffer=[]
+#     #Feeds input
+#     while True:
+#         ready_to_read=select.select([inp], [], [], timeout)[0] #check whether f is ready to be read, wait at least timeout (otherwise we run a crazy fast loop)
+#         if not ready_to_read:
+#             # Stdin is not ready, yield what we've got, if anything
+#             if line_buffer:
+#                 print("Yielding on timeout",len(line_buffer),"lines",file=sys.stderr,flush=True)
+#                 yield "".join(line_buffer)
+#                 line_buffer=[]
+#             continue #next try
         
-        # inp is ready to read!
-        # we should always try to get stuff until the next empty line - we might be parsing text paragraphs
-        while True:
-            line=inp.readline()
-            if not line: #End of file detected
-                if line_buffer:
-                    print("Yielding on end-of-input",len(line_buffer),"lines",file=sys.stderr,flush=True)
-                    yield "".join(line_buffer)
-                print("End-of-file detected",file=sys.stderr,flush=True)
-                return
-            line_buffer.append(line)
-            if not line.strip(): #empty line
-                break #our chance to yield
-            if not wait_for_empty_line and len(line_buffer)>batch_lines: #okay, we just have to yield
-                break
+#         # inp is ready to read!
+#         # we should always try to get stuff until the next empty line - we might be parsing text paragraphs
+#         while True:
+#             line=inp.readline()
+#             if not line: #End of file detected
+#                 if line_buffer:
+#                     print("Yielding on end-of-input",len(line_buffer),"lines",file=sys.stderr,flush=True)
+#                     yield "".join(line_buffer)
+#                 print("End-of-file detected",file=sys.stderr,flush=True)
+#                 return
+#             line_buffer.append(line)
+#             if not line.strip(): #empty line
+#                 break #our chance to yield
+#             if not wait_for_empty_line and len(line_buffer)>batch_lines: #okay, we just have to yield
+#                 break
 
-        # Now we got the next sentence --- do we have enough to yield?
-        if len(line_buffer)>batch_lines:
-            print("Yielding on full batch",len(line_buffer),"lines",file=sys.stderr,flush=True)
-            yield "".join(line_buffer) #got enough
-            line_buffer=[]
+#         # Now we got the next sentence --- do we have enough to yield?
+#         if len(line_buffer)>batch_lines:
+#             print("Yielding on full batch",len(line_buffer),"lines",file=sys.stderr,flush=True)
+#             yield "".join(line_buffer) #got enough
+#             line_buffer=[]
 
 def read_pipelines(fname):
     absdir=os.path.dirname(os.path.abspath(fname))
@@ -91,10 +92,11 @@ if __name__=="__main__":
     p=Pipeline(steps=pipeline, extra_args=args)
 
     print("Waiting for input",file=sys.stderr,flush=True)
+    comment_regex=re.compile("^####?C:")
     line_buffer=[]
     for line in sys.stdin:
         line_buffer.append(line)
-        if (line.strip()=="" or not args.empty_line_batching) and len(line_buffer)>args.batch_lines:
+        if not comment_regex.match(line) and (line.strip()=="" or not args.empty_line_batching) and len(line_buffer)>args.batch_lines:
             if not p.is_alive(): #gotta end if something dies
                 print("Something crashed. Exiting.",file=sys.stderr,flush=True)
                 sys.exit(-1)
