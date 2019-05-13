@@ -93,17 +93,17 @@ def train_all(args):
     # tokenizer --- TODO
 
     # Tagger
-    os.system("python {workdir}/../Parser-v2/main.py --save_dir models_{name}/Tagger train --config_file models_{name}/tagger.cfg".format(workdir=thisdir, name=args.name))
+    os.system("python3 {workdir}/../Parser-v2/main.py --save_dir models_{name}/Tagger train --config_file models_{name}/tagger.cfg".format(workdir=thisdir, name=args.name))
 
     # Parser
-    os.system("python {workdir}/../Parser-v2/main.py --save_dir models_{name}/Parser train --config_file models_{name}/parser.cfg".format(workdir=thisdir, name=args.name))
+    os.system("python3 {workdir}/../Parser-v2/main.py --save_dir models_{name}/Parser train --config_file models_{name}/parser.cfg".format(workdir=thisdir, name=args.name))
 
     # Lemmatizer
-    os.system("python {workdir}/../universal-lemmatizer/train_lemmatizer.py --treebank default --config models_{name}/lemmatizer.yaml".format(workdir=thisdir, name=args.name))
+    os.system("python3 {workdir}/../universal-lemmatizer/train_lemmatizer.py --treebank default --config models_{name}/lemmatizer.yaml".format(workdir=thisdir, name=args.name))
 
     copy_lemmatizer(args) # copy the latest lemmatizer under correct name
 
-    os.system("cat {train} | python {workdir}/../build_lemma_cache.py > models_{name}/Lemmatizer/lemma_cache.tsv".format(train=args.train_file, workdir=thisdir, name=args.name)) # build lemma cache
+    os.system("cat {train} | python3 {workdir}/../build_lemma_cache.py > models_{name}/Lemmatizer/lemma_cache.tsv".format(train=args.train_file, workdir=thisdir, name=args.name)) # build lemma cache
 
     print("Training done", file=sys.stderr)
     
