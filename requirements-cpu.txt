@@ -1,5 +1,6 @@
 wheel
 
+requests
 keras
 h5py
 matplotlib
