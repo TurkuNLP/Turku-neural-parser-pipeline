@@ -47,7 +47,7 @@ Building a language-specific image is straightforward. For this you need to choo
 
 Build the Docker image like so:
 
-    docker build -t "my_french_parser_plaintext" --build-arg "MODEL=fr_gsd" --build-arg "PIPELINE=parse_plaintext" -f Dockerfile https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
+    docker build -t "my_french_parser_plaintext" --build-arg "MODEL=fr_gsd" --build-arg "PIPELINE=parse_plaintext" -f Dockerfile.oneshot https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
 
 And then you can parse French like so:
 
