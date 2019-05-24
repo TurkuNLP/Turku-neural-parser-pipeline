@@ -21,21 +21,21 @@ We provide docker images for both cpu and gpu architectures. When launching a co
 
 Ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically. Currently there are images with the base parser environment for cpu and gpu, as well as an image with Finnish, Swedish, and English models, again for both cpu and gpu. To list the models and pipelines available in a particular image, you can run:
 
-    docker run --entrypoint ./list_models.sh turkunlp/turku-neural-parser:fi-en-sv-cpu 
+    docker run --entrypoint ./list_models.sh turkunlp/turku-neural-parser:latest-fi-en-sv-cpu 
 
 # Streaming mode - one-off parsing of text
 
 This is the simplest way to run the parser and is useful for one-off parsing of text. It is unsuitable for repeated requests, as running in this mode is subject to a major startup cost as the parser loads the large model. To parse using one of the pre-made images with Finnish, Swedish and English models:
 
-    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:fi-en-sv-cpu stream fi_tdt parse_plaintext > parsed.conllu
+    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:latest-fi-en-sv-cpu stream fi_tdt parse_plaintext > parsed.conllu
 
 or if you have the NVidia-enabled docker, you can run the gpu version:
 
-    echo "Minulla on koira." | docker run --runtime=nvidia -i turkunlp/turku-neural-parser:fi-en-sv-gpu stream fi_tdt parse_plaintext > parsed.conllu
+    echo "Minulla on koira." | docker run --runtime=nvidia -i turkunlp/turku-neural-parser:latest-fi-en-sv-gpu stream fi_tdt parse_plaintext > parsed.conllu
 
 And for English (the only change being that we specify the `en_ewt` model instead of `fi_tdt`):
 
-    echo "I don't have a goldfish." | docker run -i turkunlp/turku-neural-parser:fi-en-sv-cpu stream en_ewt parse_plaintext > parsed.conllu
+    echo "I don't have a goldfish." | docker run -i turkunlp/turku-neural-parser:latest-fi-en-sv-cpu stream en_ewt parse_plaintext > parsed.conllu
 
 
 The general command to run the parser in this mode is:
@@ -46,7 +46,7 @@ The general command to run the parser in this mode is:
 
 In this mode, the parser loads the model once, and can subsequently respond to repeated requests using HTTP requests. For example, using the gpu version:
 
-    docker run --runtime=nvidia -d -p 15000:7689 turkunlp/turku-neural-parser:fi-en-sv-gpu server en_ewt parse_plaintext
+    docker run --runtime=nvidia -d -p 15000:7689 turkunlp/turku-neural-parser:latest-fi-en-sv-gpu server en_ewt parse_plaintext
 
 and on cpu
 
