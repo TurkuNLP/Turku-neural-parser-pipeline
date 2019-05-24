@@ -3,7 +3,7 @@
 
 ARG hardware=cpu
 
-FROM turkunlp/turku-neural-parser:base-${hardware}
+FROM turkunlp/turku-neural-parser:latest-base-${hardware}
 ARG models
 SHELL ["/bin/bash", "-c"]
 WORKDIR /app

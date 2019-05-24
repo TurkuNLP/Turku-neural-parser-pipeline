@@ -25,7 +25,7 @@ Ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.
 
 # Streaming mode - one-off parsing of text
 
-This is the simplest way to run the parser and is useful for one-off parsing of text. It is unsuitable for repeated requests, as running in this mode is subject to a major startup cost as the parser loads the large model. To parse using one of the pre-made images with Finnish, Swedish and English models:
+This is the simplest way to run the parser and is useful for one-off parsing of text. It is unsuitable for repeated requests, as running in this mode is subject to a major startup cost as the parser loads the large model, about one minute. To parse using one of the pre-made images with Finnish, Swedish and English models:
 
     echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:latest-fi-en-sv-cpu stream fi_tdt parse_plaintext > parsed.conllu
 
@@ -50,9 +50,9 @@ In this mode, the parser loads the model once, and can subsequently respond to r
 
 and on cpu
 
-    docker run -d -p 15000:7689 turkunlp/turku-neural-parser:fi-en-sv-cpu server en_ewt parse_plaintext
+    docker run -d -p 15000:7689 turkunlp/turku-neural-parser:latest-fi-en-sv-cpu server en_ewt parse_plaintext
 
-will start the parser in server mode, using the English `en_ewt` model and `parse_plaintext` pipeline, and will listen on the local port 15000 for requests. Note: There is nothing magical about the port number 15000, you can set it to any suitable port number. You can query the running parser as follows:
+will start the parser in server mode, using the English `en_ewt` model and `parse_plaintext` pipeline, and will listen on the local port 15000 for requests once it has loaded the model. Note: There is nothing magical about the port number 15000, you can set it to any suitable port number. You can query the running parser as follows:
 
 
 ```
