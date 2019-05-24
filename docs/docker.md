@@ -4,67 +4,59 @@ layout: default
 
 # Docker
 
-
-We provide two flavors of Docker images: one which parses text from standard input and exits. Since it loads the model every time you run it, it is not suitable for repeated parsing of small chunks of text. The other flavor is server mode, which starts, loads the model and listens on a port where you can feed in chunks of text without incurring the overhead of model reloading.
-
-
 <div class="alert" markdown="1">
 #### Docker on OSX and Windows
 
 Docker on OSX and Windows is configured with a default tight memory limit which needs to be increased. Reaching this limit manifests itself by the Docker container hanging indefinitely. See <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/15">issue #15</a>.
 </div>
 
-# One-shot parser images
 
-For a quick test on the pre-made Finnish image:
+We provide docker images for both cpu and gpu architectures. When launching a container based upon these images, it is possible to select:
 
-    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:finnish-cpu-plaintext-stdin
+  * Whether to run the parser in a one-shot stdin-stdout streaming mode or a server mode which does not reload the model on every request
+  * Which of the language models included with the image to use
+  * Which pipeline from the model to run
 
-And for English:
+# Ready-made images
 
-    echo "I don't have a goldfish." | docker run -i turkunlp/turku-neural-parser:english-cpu-plaintext-stdin
+Ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically. Currently there are images with the base parser environment for cpu and gpu, as well as an image with Finnish, Swedish, and English models, again for both cpu and gpu. To list the models and pipelines available in a particular image, you can run:
 
-## Ready-made images
+    docker run --entrypoint ./list_models.sh turkunlp/turku-neural-parser:fi-en-sv-cpu 
 
-Several ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically. Currently the ready-made images exist for Finnish and English.
+# Streaming mode - one-off parsing of text
 
-* the `<language>-cpu-plaintext-stdin` images are most useful to one-off parse a text document on a standard computer without GPU acceleration. These are by far the easiest to use, but since the model is loaded every time you launch the parser, incuring a non-trivial startup delay, these images are not suitable for on-the-fly parsing
-* the `commonbase-cpu-latest` image contains the parser itself, but no models to save space, it is the basis for the language-specific images
+This is the simplest way to run the parser and is useful for one-off parsing of text. It is unsuitable for repeated requests, as running in this mode is subject to a major startup cost as the parser loads the large model. To parse using one of the pre-made images with Finnish, Swedish and English models:
 
-### Running from a ready-made image
+    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:fi-en-sv-cpu stream fi_tdt parse_plaintext > parsed.conllu
 
-To simply test the parser:
+or if you have the NVidia-enabled docker, you can run the gpu version:
 
-    echo "Minulla on koira." | docker run -i turkunlp/turku-neural-parser:finnish-cpu-plaintext-stdin
+    echo "Minulla on koira." | docker run --runtime=nvidia -i turkunlp/turku-neural-parser:fi-en-sv-gpu stream fi_tdt parse_plaintext > parsed.conllu
 
-To one-off parse a single file:
+And for English (the only change being that we specify the `en_ewt` model instead of `fi_tdt`):
 
-    cat input.txt | docker run -i turkunlp/turku-neural-parser:finnish-cpu-plaintext-stdin > output.conllu
+    echo "I don't have a goldfish." | docker run -i turkunlp/turku-neural-parser:fi-en-sv-cpu stream en_ewt parse_plaintext > parsed.conllu
 
-## Images for other languages
 
-Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline.
+The general command to run the parser in this mode is:
 
-Build the Docker image like so:
+    docker run -i [image] stream [language_model] [pipeline]
 
-    docker build -t "my_french_parser_plaintext" --build-arg "MODEL=fr_gsd" --build-arg "PIPELINE=parse_plaintext" -f Dockerfile https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
+# Server mode
 
-And then you can parse French like so:
+In this mode, the parser loads the model once, and can subsequently respond to repeated requests using HTTP requests. For example, using the gpu version:
 
-    echo "Les carottes sont cuites" | docker run -i my_french_parser_plaintext
+    docker run --runtime=nvidia -d -p 15000:7689 turkunlp/turku-neural-parser:fi-en-sv-gpu server en_ewt parse_plaintext
 
-# Server mode images
+and on cpu
 
-These are built much like the one-shot images, and we provide the English and Finnish images on DockerHub. The started containers listen to POST requests on port number 7689. Run like such:
+    docker run -d -p 15000:7689 turkunlp/turku-neural-parser:fi-en-sv-cpu server en_ewt parse_plaintext
 
-```
-docker run -d -p 15000:7689 turkunlp/turku-neural-parser:finnish-cpu-plaintext-server
-```
+will start the parser in server mode, using the English `en_ewt` model and `parse_plaintext` pipeline, and will listen on the local port 15000 for requests. Note: There is nothing magical about the port number 15000, you can set it to any suitable port number. You can query the running parser as follows:
 
-This maps the port at which the Docker image listens to your localhost port 15000 (any free port number will do of course) so you can parse as follows:
 
 ```
-curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-binary "Tämä on esimerkkilause" http://localhost:15000 > parsed.conllu
+curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-binary "This is an example sentence, nothing more, nothing less." http://localhost:15000 > parsed.conllu
 ```
 
 or
@@ -72,3 +64,16 @@ or
 ```
 curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-binary @input_text.txt http://localhost:15000 > parsed.conllu
 ```
+
+# Images for other languages
+
+Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline.
+
+Build the Docker image like so:
+
+    docker build -t "my_french_parser_plaintext" --build-arg models=fr_gsd --build-arg hardware=cpu -f Dockerfile-lang https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
+
+And then you can parse French like so:
+
+    echo "Les carottes sont cuites" | docker run -i my_french_parser_plaintext stream fr_gsd parse_plaintext
+

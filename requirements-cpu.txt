@@ -6,13 +6,13 @@ h5py
 matplotlib
 flask
 numpy
+ufal.udpipe
 pyyaml
 
-ufal.udpipe
 configargparse
-flask
 
 tensorflow==1.12.2
+
 torch==0.4.1
 torchtext==0.3.1
 torchvision==0.2.1
