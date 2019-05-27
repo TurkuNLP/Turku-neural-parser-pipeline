@@ -44,7 +44,7 @@ The general command to run the parser in this mode is:
 
     docker run -i [image] stream [language_model] [pipeline]
 
-# Server mode - Repeated requests
+# Server mode - repeated requests
 
 In this mode, the parser loads the model once, and can subsequently respond to repeated requests using HTTP requests. For example, using the gpu version:
 
