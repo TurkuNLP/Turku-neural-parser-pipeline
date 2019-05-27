@@ -44,7 +44,7 @@ The general command to run the parser in this mode is:
 
     docker run -i [image] stream [language_model] [pipeline]
 
-# Server mode
+# Server mode - Repeated requests
 
 In this mode, the parser loads the model once, and can subsequently respond to repeated requests using HTTP requests. For example, using the gpu version:
 
@@ -69,7 +69,7 @@ curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-bi
 
 # Images for other languages
 
-Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline.
+Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline. The `hardware` build parameter controls whether you want a `gpu` or `cpu` image.
 
 Build the Docker image like so:
 
@@ -81,3 +81,4 @@ And then you can parse French like so:
 
     echo "Les carottes sont cuites" | docker run -i my_french_parser stream fr_gsd parse_plaintext
 
+In case you want to build an image with several language models included, you can specify several models when building the image, e.g. as follows: `--build-arg models="fr_gsd en_ewt fi_tdt"` 
