@@ -17,6 +17,8 @@ We provide docker images for both cpu and gpu architectures. When launching a co
   * Which of the language models included with the image to use
   * Which pipeline from the model to run
 
+Note that in order to run the gpu images, you need the [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) successfully installed. Please make sure you are able to successfully run it before trying to run the parser gpu images.
+
 # Ready-made images
 
 Ready-made Docker images are published in the [TurkuNLP Docker Hub](https://hub.docker.com/r/turkunlp/turku-neural-parser/tags) where Docker can find them automatically. Currently there are images with the base parser environment for cpu and gpu, as well as an image with Finnish, Swedish, and English models, again for both cpu and gpu. To list the models and pipelines available in a particular image, you can run:
