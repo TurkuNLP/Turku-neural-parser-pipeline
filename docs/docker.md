@@ -10,6 +10,14 @@ layout: default
 Docker on OSX and Windows is configured with a default tight memory limit which needs to be increased. Reaching this limit manifests itself by the Docker container hanging indefinitely. See <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/15">issue #15</a>.
 </div>
 
+<div class="alert" markdown="1">
+#### Input encoding on Windows
+
+In case you get encoding issues in Windows PowerShell, try to enforce `utf-8` as shown in <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/21">issue #21</a>
+</div>
+
+
+
 
 We provide docker images for both cpu and gpu architectures. When launching a container based upon these images, it is possible to select:
 
