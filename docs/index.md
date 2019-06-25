@@ -68,11 +68,11 @@ See [here](docker.html) for running the Docker version of the parser.
 
 In the basic streaming mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as (with GPU lemmatizer):
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
+    echo "Minulla on koira." | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext
     
 or (with CPU lemmatizer)
 
-    cat myfile.txt | python3 full_pipeline_stream.py --gpu -1 --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
+    echo "Minulla on koira." | python3 full_pipeline_stream.py --gpu -1 --conf models_fi_tdt/pipelines.yaml parse_plaintext
 
 
 # Running the parser -- long version
