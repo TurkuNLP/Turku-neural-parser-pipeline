@@ -26,7 +26,7 @@ We highly recommend that you make a virtual environment for the parser and insta
     source venv-parser-neural/bin/activate
     pip3 install wheel
 
-Then you need to install the necessary libraries:
+Then you need to install the necessary libraries (note: remember to remove tensorflow or pytorch from the requirements if you need to install them separately due to particular limitations of your machine):
 
     pip3 install -r requirements-gpu.txt
 
@@ -55,3 +55,7 @@ GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" match
 All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and you can use the following utility script to fetch the model you need:
 
     python3 fetch_models.py fi_tdt
+
+## Test the model
+
+Now you can <a href="/#running-the-parser--short-version">test the model</a>.
