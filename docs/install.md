@@ -58,4 +58,4 @@ All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and 
 
 ## Test the model
 
-Now you can <a href="../#running-the-parser--short-version">test the model</a>.
+Now you can [test the model](index.md#running-the-parser--short-version)
