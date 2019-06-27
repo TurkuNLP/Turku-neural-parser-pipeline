@@ -35,3 +35,13 @@ parse_conllu_nolemmas:
 
 tokenize:
   - tokenizer_udpipe_mod --model {thisdir}/Tokenizer/tokenizer.udpipe
+
+tag_plaintext:
+  - tokenizer_udpipe_mod --model {thisdir}/Tokenizer/tokenizer.udpipe
+  - parser_mod --model {thisdir}/Tagger --process_morpho
+
+lemmatize_plaintext:
+  - tokenizer_udpipe_mod --model {thisdir}/Tokenizer/tokenizer.udpipe
+  - parser_mod --model {thisdir}/Tagger --process_morpho
+  - lemma_cache_mod --lemma_cache {thisdir}/Lemmatizer/lemma_cache.tsv
+  - lemmatizer_mod --model {thisdir}/Lemmatizer/lemmatizer.pt --replace_unk

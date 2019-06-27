@@ -11,7 +11,7 @@ import sys
 import glob
 from shutil import copyfile, rmtree
 import re
-
+from distutils.util import strtobool
 
 thisdir=os.path.dirname(os.path.realpath(__file__))
 
@@ -93,17 +93,35 @@ def train_all(args):
     # tokenizer --- TODO
 
     # Tagger
-    os.system("python3 {workdir}/../Parser-v2/main.py --save_dir models_{name}/Tagger train --config_file models_{name}/tagger.cfg".format(workdir=thisdir, name=args.name))
+    if args.tagger:
+        print("Training a tagger", file=sys.stderr)
+        status = os.system("python3 {workdir}/../Parser-v2/main.py --save_dir models_{name}/Tagger train --config_file models_{name}/tagger.cfg".format(workdir=thisdir, name=args.name))
+        if status != 0:
+            print("Tagger status:", status, "Training failed.", file=sys.stderr)
+            sys.exit()
 
     # Parser
-    os.system("python3 {workdir}/../Parser-v2/main.py --save_dir models_{name}/Parser train --config_file models_{name}/parser.cfg".format(workdir=thisdir, name=args.name))
+    if args.parser:
+        print("Training a parser")
+        status = os.system("python3 {workdir}/../Parser-v2/main.py --save_dir models_{name}/Parser train --config_file models_{name}/parser.cfg".format(workdir=thisdir, name=args.name))
+        if status != 0:
+            print("Parser status:", status, "Training failed.", file=sys.stderr)
+            sys.exit()
 
     # Lemmatizer
-    os.system("python3 {workdir}/../universal-lemmatizer/train_lemmatizer.py --treebank default --config models_{name}/lemmatizer.yaml".format(workdir=thisdir, name=args.name))
+    if args.lemmatizer == True:
+        print("Training a lemmatizer")
+        status = os.system("python3 {workdir}/../universal-lemmatizer/train_lemmatizer.py --treebank default --config models_{name}/lemmatizer.yaml".format(workdir=thisdir, name=args.name))
+        if status != 0:
+            print("Lemmatizer status:", status, "Training failed.", file=sys.stderr)
+            sys.exit()
 
-    copy_lemmatizer(args) # copy the latest lemmatizer under correct name
+        copy_lemmatizer(args) # copy the latest lemmatizer under correct name
 
-    os.system("cat {train} | python3 {workdir}/../build_lemma_cache.py > models_{name}/Lemmatizer/lemma_cache.tsv".format(train=args.train_file, workdir=thisdir, name=args.name)) # build lemma cache
+        status = os.system("cat {train} | python3 {workdir}/../build_lemma_cache.py > models_{name}/Lemmatizer/lemma_cache.tsv".format(train=args.train_file, workdir=thisdir, name=args.name)) # build lemma cache
+        if status != 0:
+            print("Lemma cache status:", status, "Training failed.", file=sys.stderr)
+            sys.exit()
 
     print("Training done", file=sys.stderr)
     
@@ -127,7 +145,14 @@ if __name__=="__main__":
     argparser.add_argument('--train_file', type=str, required=True, help='Training data file (conllu)')
     argparser.add_argument('--devel_file', type=str, required=True, help='Development data file (conllu)')
     argparser.add_argument('--embeddings', type=str, help='Word Embeddings (in word2vec text format)')
+
+    argparser.add_argument('--tagger', type=lambda x:bool(strtobool(x)), default=True, choices=[True, False], help='Train a tagger (Default:True)')
+    argparser.add_argument('--parser', type=lambda x:bool(strtobool(x)), default=True, choices=[True, False], help='Train a parser (Default:True)')
+    argparser.add_argument('--lemmatizer', type=lambda x:bool(strtobool(x)), default=True, choices=[True, False], help='Train a lemmatizer (Default:True)')
+
     args = argparser.parse_args()
+
+    print(args)
 
     try:
         if os.path.isdir("models_{name}".format(name=args.name)):
