@@ -30,7 +30,7 @@ def create_model_directory(args):
     # copy necessary files
     if args.embeddings: # embeddings
         copyfile(args.embeddings, "models_{name}/Data/embeddings.vectors".format(name=args.name))
-    copyfile("{workdir}/{config}/pipelines.yaml".format(workdir=thisdir, config=args.config_directory), "models_{workdir}/pipelines.yaml".format(workdir=args.name))
+    copyfile("{config}/pipelines.yaml".format(config=args.config_directory), "models_{name}/pipelines.yaml".format(name=args.name))
     process_morpho(args) # train/dev files for tagger/parser
     process_config(args) # configs for tagger/parser
     
@@ -38,19 +38,19 @@ def create_model_directory(args):
 
 def process_config(args):
 
-    with open("{workdir}/{config}/tagger.cfg".format(workdir=thisdir, config=args.config_directory), "rt", encoding="utf-8") as f:
+    with open("{config}/tagger.cfg".format(config=args.config_directory), "rt", encoding="utf-8") as f:
         data=f.read()
         data = data.replace("treebank = placeholder", "treebank = {name}".format(name=args.name))
         with open("models_{name}/tagger.cfg".format(name=args.name), "wt", encoding="utf-8") as z:
             print(data, file=z)
 
-    with open("{workdir}/{config}/parser.cfg".format(workdir=thisdir, config=args.config_directory), "rt", encoding="utf-8") as f:
+    with open("{config}/parser.cfg".format(config=args.config_directory), "rt", encoding="utf-8") as f:
         data=f.read()
         data = data.replace("treebank = placeholder", "treebank = {name}".format(name=args.name))
         with open("models_{name}/parser.cfg".format(name=args.name), "wt", encoding="utf-8") as z:
             print(data, file=z)
 
-    with open("{workdir}/{config}/lemmatizer.yaml".format(workdir=thisdir, config=args.config_directory), "rt", encoding="utf-8") as f:
+    with open("{config}/lemmatizer.yaml".format(config=args.config_directory), "rt", encoding="utf-8") as f:
         data=f.read()
         data = data.replace("train: placeholder", "train: {train}".format(train=args.train_file))
         data = data.replace("dev: placeholder", "dev: {dev}".format(dev=args.devel_file))
@@ -140,8 +140,8 @@ def train_all(args):
 if __name__=="__main__":
     import argparse
     argparser = argparse.ArgumentParser(description='A script for training new models')
-    argparser.add_argument('--name', default="mymodel", help='Model name, all trained models will be saved under models_%name" -directory.')
-    argparser.add_argument('--config_directory', default="templates", help='Directory where to load config files.')
+    argparser.add_argument('--name', default="mymodel", help='Model name, all trained models will be saved under models_name -directory.')
+    argparser.add_argument('--config_directory', default="{workdir}/templates".format(workdir=thisdir), help='Directory where to load config files. (Default: train/templates)')
     argparser.add_argument('--train_file', type=str, required=True, help='Training data file (conllu)')
     argparser.add_argument('--devel_file', type=str, required=True, help='Development data file (conllu)')
     argparser.add_argument('--embeddings', type=str, help='Word Embeddings (in word2vec text format)')
@@ -150,18 +150,22 @@ if __name__=="__main__":
     argparser.add_argument('--parser', type=lambda x:bool(strtobool(x)), default=True, choices=[True, False], help='Train a parser (Default:True)')
     argparser.add_argument('--lemmatizer', type=lambda x:bool(strtobool(x)), default=True, choices=[True, False], help='Train a lemmatizer (Default:True)')
 
+    argparser.add_argument('--force_delete', default=False, action="store_true", help='Delete old files without asking (Default: False)')
+
     args = argparser.parse_args()
 
-    print(args)
+    print(args, file=sys.stderr)
 
     try:
         if os.path.isdir("models_{name}".format(name=args.name)):
-            input('Save directory models_{name} already exists. Press <Enter> to continue or <Ctrl-c> to abort.'.format(name=args.name))
+            if not args.force_delete:
+                input('Save directory models_{name} already exists. Press <Enter> to continue or <Ctrl-c> to abort.'.format(name=args.name))
             files=[]
             for dirpath, dirnames, filenames in os.walk('models_{name}'.format(name=args.name)):
                 for fname in filenames:
                     files.append(os.path.join(dirpath, fname))
-            input('Deleting {files}. Press <Enter> to continue or <Ctrl-c> to abort.'.format(files=", ".join(files)))
+            if not args.force_delete:
+                input('Deleting {files}. Press <Enter> to continue or <Ctrl-c> to abort.'.format(files=", ".join(files)))
             for f in files:
                 print("Deleting",f,file=sys.stderr)
                 os.remove(f)
