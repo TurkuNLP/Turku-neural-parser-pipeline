@@ -27,6 +27,7 @@ class UDPipeTokenizerWrapper():
             self.pipeline = udpipe.Pipeline(self.model,"tokenizer=presegmented","none","none","conllu")
         else:
             self.pipeline = udpipe.Pipeline(self.model,"tokenize","none","none","conllu")
+            self.pipeline.setImmediate(True) # the input is processed after loading an empty line
             
     def parse_text(self,txt):
         err=udpipe.ProcessingError()
