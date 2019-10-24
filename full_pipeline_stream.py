@@ -50,7 +50,29 @@ def read_pipelines(fname):
         new_component_list=[c.format(thisdir=absdir) for c in component_list]
         pipelines[pipeline_name]=new_component_list
     return pipelines
-            
+
+
+def batch_endswith_text(lines):
+    global comment_regex
+    for line in lines[::-1]:
+        if not line.strip(): #skip empty lines
+            continue
+        if comment_regex.match(line):
+            return False
+        return True
+    return False
+
+def batch_has_text(lines):
+    global comment_regex
+    for line in lines:
+        if not line.strip():
+            continue
+        if comment_regex.match(line):
+            continue
+        return True
+    return False
+    
+
 if __name__=="__main__":
     import argparse
     THISDIR=os.path.dirname(os.path.abspath(__file__))
@@ -96,7 +118,7 @@ if __name__=="__main__":
     line_buffer=[]
     for line in sys.stdin:
         line_buffer.append(line)
-        if not comment_regex.match(line) and (line.strip()=="" or not args.empty_line_batching) and len(line_buffer)>args.batch_lines:
+        if not comment_regex.match(line) and (line.strip()=="" or not args.empty_line_batching) and len(line_buffer)>args.batch_lines and batch_endswith_text(line_buffer):
             if not p.is_alive(): #gotta end if something dies
                 print("Something crashed. Exiting.",file=sys.stderr,flush=True)
                 sys.exit(-1)
@@ -105,11 +127,14 @@ if __name__=="__main__":
             line_buffer=[]
     else:
         if line_buffer:
-            if not p.is_alive(): #gotta end if something dies
-                print("Something crashed. Exiting.",file=sys.stderr,flush=True)
-                sys.exit(-1)
-            print("Feeding final batch",file=sys.stderr,flush=True)
-            p.put("".join(line_buffer))
+            if not batch_has_text(line_buffer):
+                print("WARNING: Comments and empty lines at the end of the input will be removed in order to produce valid conll-u. The input must not end with comments",file=sys.stderr,flush=True)
+            else:
+                if not p.is_alive(): #gotta end if something dies
+                    print("Something crashed. Exiting.",file=sys.stderr,flush=True)
+                    sys.exit(-1)
+                print("Feeding final batch",file=sys.stderr,flush=True)
+                p.put("".join(line_buffer))
 
     p.send_final()
     p.join()
