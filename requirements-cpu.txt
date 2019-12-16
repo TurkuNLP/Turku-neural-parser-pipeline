@@ -11,7 +11,7 @@ pyyaml
 
 configargparse
 
-tensorflow==1.12.2
+tensorflow==1.15.0
 
 torch==0.4.1
 torchtext==0.3.1
