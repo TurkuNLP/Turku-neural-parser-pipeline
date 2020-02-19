@@ -1,4 +1,4 @@
-from pipeline import Pipeline
+from tnparser.pipeline import Pipeline
 import sys
 import select
 import os

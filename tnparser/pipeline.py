@@ -41,7 +41,7 @@ class Pipeline:
                     params.append("--"+_argname)
                     params.append(str(_value))
 
-        mod=importlib.import_module(module_name)
+        mod=importlib.import_module("tnparser."+module_name)
         step_in=self.q_out
         self.q_out=Queue(self.max_q_size) #new pipeline end
         args=mod.argparser.parse_args(params)

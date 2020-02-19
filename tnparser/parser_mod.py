@@ -1,7 +1,7 @@
 import os.path
 import sys
 import io
-import parser_lib
+from . import parser_lib
 import argparse
 import traceback
 
@@ -31,6 +31,6 @@ def launch(args,q_in,q_out):
         
 argparser = argparse.ArgumentParser(description='Parse/Tag conllu text')
 argparser.add_argument('--model', default="/usr/share/ParseBank/TinyFinnish-Stanford-model/Finnish-Tagger", help='Model. Default: %(default)s')
-argparser.add_argument('--parser-dir', default="Parser-v2", help='Parser. Default: ./%(default)s')
+argparser.add_argument('--parser-dir', default="tnparser/Parser-v2", help='Parser. Default: ./%(default)s')
 argparser.add_argument('--process_morpho', default=False, action='store_true', help='Run transfer_morpho script to return xpos and morpho to the correct fields')
 

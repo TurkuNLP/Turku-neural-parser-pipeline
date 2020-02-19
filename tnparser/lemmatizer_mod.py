@@ -1,19 +1,13 @@
-
 import subprocess
 import os.path
 import sys
 import hashlib
 import io
-import parser_lib
 import http.server
 import urllib
-import dummy_handler
 import argparse
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "universal-lemmatizer"))
-from predict_lemmas import Lemmatizer
-
-
+from .universal_lemmatizer.predict_lemmas import Lemmatizer
 
 class LemmatizerWrapper():
 

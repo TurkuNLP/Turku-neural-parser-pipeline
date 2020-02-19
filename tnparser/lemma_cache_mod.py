@@ -2,7 +2,6 @@ import os.path
 import sys
 import hashlib
 import io
-import parser_lib
 import http.server
 import urllib
 import dummy_handler

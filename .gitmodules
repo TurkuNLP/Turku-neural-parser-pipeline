@@ -1,9 +1,9 @@
 [submodule "Parser-v2"]
-	path = Parser-v2
+	path = tnparser/Parser-v2
 	url = https://github.com/fginter/Parser-v2.git
 [submodule "universal-lemmatizer"]
-	path = universal-lemmatizer
+	path = tnparser/universal_lemmatizer
 	url = https://github.com/jmnybl/universal-lemmatizer.git
 [submodule "tokenizer"]
-	path = tokenizer
+	path = tnparser/tokenizer
 	url = https://github.com/mjluot/tokenizer.git
