@@ -3,6 +3,28 @@ import importlib
 import hashlib
 import random
 import time
+import os
+import yaml
+
+def read_pipelines(fname):
+    absdir=os.path.dirname(os.path.abspath(fname))
+    with open(fname) as f:
+        pipelines=yaml.load(f, Loader=yaml.BaseLoader)
+    for pipeline_name,component_list in pipelines.items():
+        new_component_list=[c.format(thisdir=absdir) for c in component_list]
+        pipelines[pipeline_name]=new_component_list
+    return pipelines
+
+def parse(txt,p):
+    job_id=p.put(txt)
+    while True:
+        res=p.get(job_id)
+        if res is None:
+            time.sleep(0.1)
+        else:
+            break
+    return res
+
 
 class Pipeline:
 
