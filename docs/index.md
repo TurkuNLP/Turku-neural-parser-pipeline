@@ -154,11 +154,15 @@ year={2018}
 ```
 Lemmatizer:
 ```
-@article{kanerva2019universal,
-    title={Universal Lemmatizer: A Sequence to Sequence Model for Lemmatizing Universal Dependencies Treebanks},
-    author={Jenna Kanerva and Filip Ginter and Tapio Salakoski},
-    journal={arXiv preprint arXiv:1902.00972},
-    year={2019}
+@article{kanerva2020lemmatizer,
+title={{Universal Lemmatizer}: A Sequence to Sequence Model for Lemmatizing {Universal Dependencies} Treebanks},
+author={Kanerva, Jenna and Ginter, Filip and Salakoski, Tapio},
+year={2020},
+journal={Natural Language Engineering},
+publisher={Cambridge University Press},
+DOI={10.1017/S1351324920000224},
+pages={1--30},
+url={http://dx.doi.org/10.1017/S1351324920000224}
 }
 ```
 
