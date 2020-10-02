@@ -15,17 +15,6 @@ def read_pipelines(fname):
         pipelines[pipeline_name]=new_component_list
     return pipelines
 
-def parse(txt,p):
-    job_id=p.put(txt)
-    while True:
-        res=p.get(job_id)
-        if res is None:
-            time.sleep(0.1)
-        else:
-            break
-    return res
-
-
 class Pipeline:
 
     def __init__(self,steps, extra_args=None):
@@ -102,3 +91,12 @@ class Pipeline:
                 self.done_jobs[finished_id]=finished
                 return None #whoever asked will have to ask again
 
+    def parse(self,txt):
+        job_id=self.put(txt)
+        while True:
+            res=self.get(job_id)
+            if res is None:
+                time.sleep(0.1)
+            else:
+                break
+        return res
