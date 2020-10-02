@@ -2,8 +2,8 @@ import yaml
 import os
 import flask
 import sys
-from pipeline import Pipeline
-from full_pipeline_stream import read_pipelines
+from tnparser.pipeline import Pipeline, read_pipelines
+#from full_pipeline_stream import read_pipelines
 
 app=flask.Flask(__name__)
 
