@@ -52,7 +52,7 @@ packages=dirs
     
 setuptools.setup(
     name="turku-neural-parser", # Replace with your own username
-    version="0.1",
+    version="0.2",
     author="Filip Ginter",
     author_email="filip.ginter@gmail.com",
     description="Turku Neural Parser Pipeline",
@@ -61,12 +61,12 @@ setuptools.setup(
     url="https://github.com/TurkuNLP/Turku-neural-parser-pipeline",
     packages=packages,
     package_data={'': ["tnparser/Parser-v2/config/*"]},
-    scripts=["tnpp-parse","tnpp-fetch-model"],
+    scripts=["tnpp-parse"],#,"tnpp-fetch-model"],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: Apache License",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=["requests","matplotlib","flask","ufal.udpipe","numpy","pyyaml","configargparse","torch==0.4.1","torchtext==0.3.1","torchvision==0.2.1"]
+    install_requires=["requests","matplotlib","flask","ufal.udpipe","numpy","pyyaml","configargparse","unofficial-udify==0.1.3","torchtext"]
 )
