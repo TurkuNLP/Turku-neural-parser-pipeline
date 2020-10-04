@@ -74,9 +74,10 @@ class LemmaCacheWrapper():
                     continue
                 token_counter+=1
                 if cols[LEMMA]!="_": # already filled in for example by another module, do not process
-                    output_lines.append("\t".join(t for t in cols))
-                    filled+=1
-                    continue
+                    cols[LEMMA]="_"
+                #    output_lines.append("\t".join(t for t in cols))
+                #    filled+=1
+                #    continue
                 token_data=(cols[FORM],cols[UPOS],cols[XPOS],cols[FEAT])
                 if token_data in self.cache:
                     plemma=self.cache[token_data]
