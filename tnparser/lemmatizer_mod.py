@@ -7,8 +7,6 @@ import http.server
 import urllib
 import argparse
 
-#from .universal_lemmatizer.predict_lemmas import Lemmatizer
-
 import onmt
 import configargparse
 from onmt.translate.translator import build_translator
@@ -41,17 +39,20 @@ def read_conllu(f):
 
 class Lemmatizer(object):
 
-    def __init__(self, model_name):
+    def __init__(self, args):
+
+        use_gpu = False if args.gpu_device < 0 else True
+        self.batch_size = args.batch_size
 
         # make virtual files to collect the predicted output (not actually needed but opennmt still requires this)
         self.f_output=io.StringIO()
 
-        self.translator = self.build_my_translator(model_name, self.f_output, use_gpu=False, gpu_device=-1, report_score=False)
+        self.translator = self.build_my_translator(args.model, self.f_output, use_gpu=use_gpu, gpu_device=args.gpu_device, beam_size=args.beam_size, max_length=args.max_length)
 
         self.localcache={} #tokendata -> lemma  #remembered by this process, lost thereafter
         
         
-    def load_model(self, model, use_gpu=False, gpu_device=-1, fp32=False):
+    def load_model(self, model, use_gpu=False, gpu_device=None, fp32=False):
 
         checkpoint = torch.load(model, map_location=lambda storage, loc: storage)
         model_opt = ArgumentParser.ckpt_model_opts(checkpoint['opt'])
@@ -59,7 +60,10 @@ class Lemmatizer(object):
         ArgumentParser.validate_model_opts(model_opt)
         fields = checkpoint['vocab']
 
-        model = build_base_model(model_opt, fields, use_gpu, checkpoint, gpu_device) # True = use gpu, 0 gpu id
+        if isinstance(gpu_device, int) and gpu_device < 0:
+            gpu_device = None
+
+        model = build_base_model(model_opt, fields, use_gpu, checkpoint, gpu_device) # use_gpu = True/False, gpu_device = int/None
         if fp32:
             model.float()
         model.eval()
@@ -68,11 +72,11 @@ class Lemmatizer(object):
 
 
 
-    def build_my_translator(self, model_name, out_file, use_gpu=False, gpu_device=-1, report_score=True, logger=None):
+    def build_my_translator(self, model_name, out_file, use_gpu=False, gpu_device=-1, beam_size=5, max_length=50):
 
         fields, model, model_opt = self.load_model(model_name, use_gpu=use_gpu, gpu_device=gpu_device)
 
-        scorer = onmt.translate.GNMTGlobalScorer(0., -0., 'none', 'none') # alpha, beta, something, something
+        scorer = onmt.translate.GNMTGlobalScorer(0.0, -0.0, 'none', 'none') # alpha, beta, length_penalty, coverage_penalty
 
         src_reader = onmt.inputters.str2reader["text"]()
         tgt_reader = onmt.inputters.str2reader["text"]()
@@ -82,12 +86,12 @@ class Lemmatizer(object):
                 fields,
                 src_reader,
                 tgt_reader,
-                gpu=-1,
+                gpu=gpu_device, # gpu device, negative for no gpu
                 n_best=1,
-                min_length=1,
-                max_length=100,
-                ratio=-0.,
-                beam_size=5,
+                min_length=0,
+                max_length=max_length,
+                ratio=-0.0,
+                beam_size=beam_size,
                 random_sampling_topk=1,
                 random_sampling_temp=1.0,
                 stepwise_penalty=False,
@@ -104,8 +108,8 @@ class Lemmatizer(object):
                 global_scorer=scorer,
                 out_file=out_file,
                 report_align=False,
-                report_score=report_score,
-                logger=logger,
+                report_score=False,
+                logger=None,
                 seed=-1)
         return translator
 
@@ -140,7 +144,7 @@ class Lemmatizer(object):
         # run lemmatizer if everything is not in cache
         if len(submitted_tdata)>0:
 
-            scores, predictions=self.translator.translate(translate_input, batch_size=32)
+            scores, predictions=self.translator.translate(translate_input, batch_size=self.batch_size)
             self.f_output.truncate(0) # clear this to prevent eating memory
 
             lemm_output=[l[0] for l in predictions]
@@ -198,10 +202,8 @@ class LemmatizerWrapper():
         """
         Lemmatizer model loading
         """
-        #arguments=["-model", args.model, "-gpu", str(args.gpu), "-batch_size", str(args.batch_size), "-fast", "-max_length", str(args.max_length)]
-        #if args.replace_unk:
-        #    arguments.append("-replace_unk")
-        self.lemmatizer_model=Lemmatizer(args.model)
+
+        self.lemmatizer_model=Lemmatizer(args)
         pass
 
             
@@ -222,8 +224,8 @@ def launch(args,q_in,q_out):
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
 argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help='Model')
-argparser.add_argument('--gpu', type=int, default=0, help='Gpu device id, if -1 use cpu')
+argparser.add_argument('--gpu_device', type=int, default=0, help='Gpu device id, if -1 use cpu')
 argparser.add_argument('--batch_size', type=int, default=100, help='Batch size')
 argparser.add_argument('--max_length', type=int, default=50, help='Maximum predicted sequence length')
-argparser.add_argument('--replace_unk', action="store_true", default=False, help='Replace unk option in opennmt based lemmatizer')
+argparser.add_argument('--beam_size', type=int, default=5, help='Decoding beam size')
 
