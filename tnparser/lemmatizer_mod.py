@@ -41,13 +41,13 @@ class Lemmatizer(object):
 
     def __init__(self, args):
 
-        use_gpu = False if args.gpu_device < 0 else True
+        use_gpu = False if args.device < 0 else True
         self.batch_size = args.batch_size
 
         # make virtual files to collect the predicted output (not actually needed but opennmt still requires this)
         self.f_output=io.StringIO()
 
-        self.translator = self.build_my_translator(args.model, self.f_output, use_gpu=use_gpu, gpu_device=args.gpu_device, beam_size=args.beam_size, max_length=args.max_length)
+        self.translator = self.build_my_translator(args.model, self.f_output, use_gpu=use_gpu, gpu_device=args.device, beam_size=args.beam_size, max_length=args.max_length)
 
         self.localcache={} #tokendata -> lemma  #remembered by this process, lost thereafter
         
@@ -224,7 +224,7 @@ def launch(args,q_in,q_out):
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
 argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help='Model')
-argparser.add_argument('--gpu_device', type=int, default=0, help='Gpu device id, if -1 use cpu')
+argparser.add_argument('--device', type=int, default=0, help='Gpu device id, if -1 use cpu')
 argparser.add_argument('--batch_size', type=int, default=100, help='Batch size')
 argparser.add_argument('--max_length', type=int, default=50, help='Maximum predicted sequence length')
 argparser.add_argument('--beam_size', type=int, default=5, help='Decoding beam size')

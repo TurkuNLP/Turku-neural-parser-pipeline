@@ -39,7 +39,7 @@ if __name__=="__main__":
     general_group.add_argument('--pipeline', default="parse_plaintext", help='[DEPRECATED] Name of the pipeline to run, one of those given in the YAML file. Default: %(default)s')
     general_group.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
     general_group.add_argument('--batch-lines', default=1000, type=int, help='Number of lines in a job batch. Default %(default)d, consider setting a higher value if using conllu input instead of raw text (maybe 5000 lines), and try smaller values in case of running out of memory with raw text.')
-    general_group.add_argument('--gpu_device', type=int, default=-1, help='GPU device id, if -1 use CPU')
+    general_group.add_argument('--device', type=int, default=-1, help='GPU device id, if -1 use CPU')
     general_group.add_argument('action', default=None, nargs='?', help="What to do. Either 'list' to lists pipelines or a pipeline name to parse, or nothing in which case the default parse_plaintext is used.")
 
 
@@ -47,8 +47,8 @@ if __name__=="__main__":
     args = argparser.parse_args()
 
     # set gpu device
-    args.__dict__["udify_mod.device"]=args.gpu_device
-    args.__dict__["lemmatizer_mod.gpu_device"]=args.gpu_device
+    args.__dict__["udify_mod.device"]=args.device
+    args.__dict__["lemmatizer_mod.device"]=args.device
 
 
     pipelines=read_pipelines(args.conf_yaml)
