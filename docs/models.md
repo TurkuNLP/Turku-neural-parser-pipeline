@@ -14,7 +14,7 @@ The 82 models for all languages in the CoNLL-18 Shared Task are available for do
 
 The enhanced UD models for all IWPT 2020 Shared Task languages will be available soon.
 
-## Biomedical CRAFT (English)
+## Biomedical English (CRAFT)
 
 The Biomedical English model trained on CRAFT corpus will be available soon.
 
