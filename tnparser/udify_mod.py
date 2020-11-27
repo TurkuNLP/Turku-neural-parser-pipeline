@@ -7,8 +7,8 @@ import tarfile
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-import udify
-import udify.util
+import tnparser.udify as udify
+import tnparser.udify.util
 
 from allennlp.predictors.predictor import Predictor
 from allennlp.models.archival import load_archive
@@ -29,7 +29,7 @@ class UdifyWrapper():
         """
         
         # config
-        import_submodules("udify") # this registers udify_model into allennlp lib
+        import_submodules("tnparser.udify") # this registers udify_model into allennlp lib
         archive_dir = Path(args.model).resolve().parent # where to extract the model
 
         if not os.path.isfile(archive_dir / "weights.th"):
@@ -46,7 +46,7 @@ class UdifyWrapper():
        
         configs = [Params(overrides), Params.from_file(config_file)]
 
-        params = udify.util.merge_configs(configs)
+        params = tnparser.udify.util.merge_configs(configs)
         
         predictor = "udify_predictor" if not args.raw_text else "udify_text_predictor"
         
@@ -86,7 +86,6 @@ class UdifyWrapper():
     
         #manager = _PredictManager(self.predictor, f_input.name, f_output.name, self.batch_size, print_to_console=False, has_dataset_reader=True)
         #manager.run()
-        
         
         # insides of run()
         parsed_txt = ""
