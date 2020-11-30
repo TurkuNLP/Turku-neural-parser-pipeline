@@ -1,9 +1,6 @@
 """
-A bit experimental script for training new models for tagging, parsing and lemmatization
-TODO: Currently tokenizer must be trained manually from command line (for instructions see docs/training.md)
+A bit experimental script for training new models for lemmatization
 
-Parameters are obtained from templates/lemmatizer.yaml, templates/parser.cfg, templates/tagger.cfg, templates/tokenizer.cfg
---> By defaut it will use same parameters as in the TurkuNLP CoNLL-18 models, but you can change the hyperparameter settings in these files if you wish
 """
 
 import os
@@ -13,7 +10,7 @@ from shutil import copyfile, rmtree
 import re
 from distutils.util import strtobool
 
-from lemmatizer_mod import Lemmatizer, read_conllu
+from tnparser.lemmatizer_mod import Lemmatizer, read_conllu
 
 ID, FORM, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC = range(10)
 
@@ -62,15 +59,20 @@ def train_model(args):
 
     # data
     preprocess = f"onmt_preprocess -train_src {args.tmp}/train.input -train_tgt {args.tmp}/train.output -valid_src {args.tmp}/devel.input -valid_tgt {args.tmp}/devel.output -save_data {args.tmp}/preprocessed-data -src_words_min_frequency {args.min_char_freq} -tgt_words_min_frequency {args.min_char_freq} -overwrite"
-    print(preprocess, file=sys.stderr)
+    print("", preprocess, "", sep="\n", file=sys.stderr)
     status = os.system(preprocess)
     if status != 0:
         print("Lemmatizer status:", status, "Preprocessing failed.", file=sys.stderr)
         sys.exit()
         
     # train model
-    train = f"CUDA_VISIBLE_DEVICES={args.gpu} onmt_train -data {args.tmp}/preprocessed-data -save_model {args.tmp}/lemmatizer -gpu_ranks {args.gpu if args.gpu < 1 else 0} -learning_rate {args.lr} -batch_size {args.batch_size} -optim {args.optimizer} -learning_rate_decay {args.learning_rate_decay} -dropout {args.dropout} -encoder_type brnn -train_steps {args.train_steps} -save_checkpoint_steps {args.save_every_steps} -valid_steps {args.save_every_steps}"
-    print(train, file=sys.stderr)
+    cuda=""
+    gpu_ranks=""
+    if args.gpu != -1:
+        cuda = f"CUDA_VISIBLE_DEVICES={args.gpu}"
+        gpu_ranks = f"-gpu_ranks {args.gpu if args.gpu < 1 else 0} "
+    train = f"{cuda} onmt_train -data {args.tmp}/preprocessed-data -save_model {args.tmp}/lemmatizer -learning_rate {args.lr} -batch_size {args.batch_size} -optim {args.optimizer} -learning_rate_decay {args.learning_rate_decay} -dropout {args.dropout} -encoder_type brnn -train_steps {args.train_steps} -save_checkpoint_steps {args.save_every_steps} -valid_steps {args.save_every_steps} {gpu_ranks}"
+    print("", train, "", sep="\n", file=sys.stderr)
     status = os.system(train)
     if status != 0:
         print("Lemmatizer status:", status, "Training failed.", file=sys.stderr)
@@ -78,10 +80,11 @@ def train_model(args):
 
     copy_lemmatizer(args) # copy the latest lemmatizer under correct name
 
-#    status = os.system("cat {train} | python3 {workdir}/../build_lemma_cache.py > models_{name}/Lemmatizer/lemma_cache.tsv".format(train=args.train_file, workdir=thisdir, name=args.name)) # build lemma cache
-#    if status != 0:
-#        print("Lemma cache status:", status, "Training failed.", file=sys.stderr)
-#        sys.exit()
+    print("Building lemma cache...", file=sys.stderr)
+    status = os.system(f"cat {args.train_file} | python3 {thisdir}/build_lemma_cache.py > {args.tmp}/lemma_cache.tsv") # build lemma cache
+    if status != 0:
+        print("Lemma cache status:", status, "Training failed.", file=sys.stderr)
+        sys.exit()
 
 print("Training done", file=sys.stderr)
 
@@ -117,16 +120,16 @@ if __name__=="__main__":
     argparser.add_argument('--name', default="lemmatizer.pt", help='Model name')
     argparser.add_argument('--train_file', type=str, required=True, help='Training data file (conllu)')
     argparser.add_argument('--devel_file', type=str, required=True, help='Development data file (conllu)')
-    argparser.add_argument('--tmp', type=str, default="tmp", help='Directory to place temporary files')
-    argparser.add_argument('--min_char_freq', type=int, default=5, help='Minimum character frequency to keep (rest will be replaced with unknown)')
-    argparser.add_argument('--gpu', type=int, default=0, help='GPU device (-1 for CPU)')
-    argparser.add_argument('--dropout', type=float, default=0.3, help='Dropout')
-    argparser.add_argument('--optimizer', type=str, default="adam", help='Optimizer (adam/sgd)')
-    argparser.add_argument('--lr', type=float, default=0.0005, help='Learning rate')
-    argparser.add_argument('--learning_rate_decay', type=float, default=0.9, help='Learning rate decay')
-    argparser.add_argument('--batch_size', type=int, default=64, help='Batch size')
-    argparser.add_argument('--train_steps', type=int, default=10000, help='')
-    argparser.add_argument('--save_every_steps', type=int, default=1000, help='')
+    argparser.add_argument('--tmp', type=str, default="tmp", help='Directory to place temporary files (default: tmp)')
+    argparser.add_argument('--min_char_freq', type=int, default=5, help='Minimum character frequency to keep, rest will be replaced with unknown (default: 5)')
+    argparser.add_argument('--gpu', type=int, default=0, help='GPU device, use -1 for CPU (default: 0)')
+    argparser.add_argument('--dropout', type=float, default=0.3, help='Dropout (default: 0.3)')
+    argparser.add_argument('--optimizer', type=str, default="adam", help='Optimizer (adam/sgd, default: adam)')
+    argparser.add_argument('--lr', type=float, default=0.0005, help='Learning rate (default: 0.0005)')
+    argparser.add_argument('--learning_rate_decay', type=float, default=0.9, help='Learning rate decay (default: 0.9)')
+    argparser.add_argument('--batch_size', type=int, default=64, help='Batch size (default: 64)')
+    argparser.add_argument('--train_steps', type=int, default=10000, help='Train N steps (default: 10,000)')
+    argparser.add_argument('--save_every_steps', type=int, default=1000, help='Save every N steps (default: 1000)')
     
     
 

@@ -14,7 +14,7 @@ def build(args):
         if not line or line.startswith("#"):
             continue
         cols=line.split("\t")
-        word=(cols[FORM], cols[UPOS], cols[XPOS], cols[FEATS], cols[LEMMA])
+        word=(cols[FORM], cols[UPOS], cols[FEATS], cols[LEMMA])
         if word not in words:
             words[word]=0
         words[word]+=1
@@ -23,7 +23,7 @@ def build(args):
 
         if count>args.cutoff:
             w="\t".join(word)
-            if len(w.strip().split("\t"))!=5: # make sure there is no empty columns
+            if len(w.strip().split("\t"))!=4: # make sure there is no empty columns
                 print("Skipping weird line", w, file=sys.stderr)
                 continue
             print(w)

@@ -17,7 +17,7 @@ from onmt.translate import Translator
 
 
 ID,FORM,LEMMA,UPOS,XPOS,FEATS,HEAD,DEPREL,DEPS,MISC=range(10)
-
+WHITESPACE_MARKER = "$@@$"
 
 def read_conllu(f):
     sent=[]
@@ -39,8 +39,15 @@ def read_conllu(f):
 
 class Lemmatizer(object):
 
-    def __init__(self, args):
-
+    def __init__(self):
+        # empty init
+        # use init_model() to initialize the model before prediction
+        self.model_ready=False
+        pass
+        
+        
+    def init_model(self, args):
+        
         use_gpu = False if args.device < 0 else True
         self.batch_size = args.batch_size
 
@@ -50,6 +57,7 @@ class Lemmatizer(object):
         self.translator = self.build_my_translator(args.model, self.f_output, use_gpu=use_gpu, gpu_device=args.device, beam_size=args.beam_size, max_length=args.max_length)
 
         self.localcache={} #tokendata -> lemma  #remembered by this process, lost thereafter
+        self.model_ready=True
         
         
     def load_model(self, model, use_gpu=False, gpu_device=None, fp32=False):
@@ -118,6 +126,10 @@ class Lemmatizer(object):
 
     def lemmatize_batch(self, data_batch):
         """ Lemmatize one data batch """
+        
+        if self.model_ready==False:
+            print("\nERROR: Lemmatizer.init_model() must be called before prediction!\n", file=sys.stderr)
+            sys.exit(1)
 
         submitted=set() #set of submitted tokens
         submitted_tdata=[] #list of token data entries submitted for lemmatization
@@ -138,7 +150,7 @@ class Lemmatizer(object):
                 if token_data not in self.localcache and token_data not in submitted:
                     submitted.add(token_data)
                     submitted_tdata.append(token_data)
-                    form = self.transform_token(token)
+                    form, _ = self.transform_token(token)
                     translate_input.append(form)
         print(" >>> {}/{} unique tokens submitted to lemmatizer".format(len(submitted_tdata),token_counter),file=sys.stderr)
         # run lemmatizer if everything is not in cache
@@ -176,23 +188,28 @@ class Lemmatizer(object):
 
     def transform_token(self, cols):
 
-        input_chars = " ".join(c for c in cols[FORM]) # our translation model uses whitespace tokenization, so let's create character level model by inserting whitespaces
+        input_chars = " ".join(c if c != " " else WHITESPACE_MARKER for c in cols[FORM])
         features = " ".join([cols[UPOS]] + cols[FEATS].split("|")) # add morphological features
         input_chars = input_chars + " " + features
+        
+        lemma_chars = " ".join(c if c != " " else WHITESPACE_MARKER for c in cols[LEMMA])
 
-        return input_chars
+        return input_chars, lemma_chars
 
     def detransform_string(self, token):
 
         chars=[]
         for t in token.split(" "):
-            if t=="$@@$":
+            if t==WHITESPACE_MARKER:
                 chars.append(" ")
                 continue
             if len(t)>1 and "=" in t: # leaked pos or morphological tag because of -replace_unk
                 continue 
             chars.append(t)
-        return "".join(chars)
+        chars = "".join(chars).strip()
+        if chars == "":
+            chars = "_"
+        return chars
 
 
 
@@ -203,7 +220,8 @@ class LemmatizerWrapper():
         Lemmatizer model loading
         """
 
-        self.lemmatizer_model=Lemmatizer(args)
+        self.lemmatizer_model=Lemmatizer()
+        self.lemmatizer_model.init_model(args)
         pass
 
             
