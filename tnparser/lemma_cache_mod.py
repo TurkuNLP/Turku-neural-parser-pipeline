@@ -49,8 +49,8 @@ class LemmaCacheWrapper():
         """ make lemmatizer faster by keeping lemma cache (run lemmatizer only for words not in this cache) """
         with open(cache_file, "rt", encoding="utf8") as f:
             for line in f:
-                form, upos, xpos, feats, lemma = line.strip().split("\t")
-                self.cache[(form, upos, xpos, feats)]=lemma
+                form, upos, feats, lemma = line.strip().split("\t")
+                self.cache[(form, upos, feats)]=lemma
 
     def is_url_or_email(self, word):
         if re.match(url_regex, word):
@@ -78,7 +78,7 @@ class LemmaCacheWrapper():
                 #    output_lines.append("\t".join(t for t in cols))
                 #    filled+=1
                 #    continue
-                token_data=(cols[FORM],cols[UPOS],cols[XPOS],cols[FEAT])
+                token_data=(cols[FORM],cols[UPOS],cols[FEAT])
                 if token_data in self.cache:
                     plemma=self.cache[token_data]
                     if plemma.strip()=="":
