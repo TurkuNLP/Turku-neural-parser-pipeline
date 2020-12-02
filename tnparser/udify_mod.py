@@ -19,6 +19,24 @@ from allennlp.commands.predict import _PredictManager
 from allennlp.common.util import lazy_groups_of
 
 
+def read_conllu(txt):
+    sent=[]
+    comment=[]
+    for line in txt.split("\n"):
+        line=line.strip()
+        if not line: # new sentence
+            if sent:
+                yield comment,sent
+            comment=[]
+            sent=[]
+        elif line.startswith("#"):
+            comment.append(line)
+        else: #normal line
+            sent.append(line.split("\t"))
+    else:
+        if sent:
+            yield comment, sent
+            
 
 
 class UdifyWrapper():
@@ -75,17 +93,22 @@ class UdifyWrapper():
         for output in results:
             yield self.predictor.dump_line(output)
             
+    def conllu_comments(self, txt):
+        # returns comments (list) of each sentence
+        comments = []
+        for comm, sent in read_conllu(txt):
+            comments.append(comm)
+        return comments
+        
     def parse_text(self, txt):
+    
+        comments = self.conllu_comments(txt)
         
         f_input = NamedTemporaryFile()
     
         with open(f_input.name, "wt", encoding="utf-8") as f:
-            for line in txt.split("\n"):
-                print(line, file=f)
+            print(txt, end="", file=f)
             
-    
-        #manager = _PredictManager(self.predictor, f_input.name, f_output.name, self.batch_size, print_to_console=False, has_dataset_reader=True)
-        #manager.run()
         
         # insides of run()
         parsed_txt = ""
@@ -94,6 +117,17 @@ class UdifyWrapper():
                 parsed_txt += result
             
         f_input.close()
+        
+        # merge comments and text
+        sentences = [sent for comm, sent in read_conllu(parsed_txt)]
+        assert len(comments) == len(sentences)
+        parsed_txt = ""
+        for comm, sent in zip(comments, sentences):
+            for c in comm:
+                parsed_txt += c+"\n"
+            for token in sent:
+                parsed_txt += "\t".join(token) + "\n"
+            parsed_txt += "\n"
 
         return parsed_txt
         
