@@ -243,7 +243,7 @@ def launch(args,q_in,q_out):
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
 argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help='Model')
 argparser.add_argument('--device', type=int, default=0, help='Gpu device id, if -1 use cpu')
-argparser.add_argument('--batch_size', type=int, default=100, help='Batch size')
+argparser.add_argument('--batch_size', type=int, default=256, help='Batch size')
 argparser.add_argument('--max_length', type=int, default=50, help='Maximum predicted sequence length')
 argparser.add_argument('--beam_size', type=int, default=5, help='Decoding beam size')
 
