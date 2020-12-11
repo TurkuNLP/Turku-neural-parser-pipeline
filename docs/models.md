@@ -28,5 +28,5 @@ The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [
 
 This `fi_tdt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained FinBERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/jmnybl/turku-neural-parser-colab).
 
-
+Instructions how to run the new parser locally will be available soon.
 
