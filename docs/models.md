@@ -16,6 +16,11 @@ The enhanced UD models for all IWPT 2020 Shared Task languages will be available
 
 ## Biomedical English (CRAFT) <a id="craft"></a>
 
-The Biomedical English model trained on CRAFT corpus will be available soon.
+The Biomedical English model trained on CRAFT corpus v4.0.0 is available here: [models_en_craft_v4.0.0](http://dl.turkunlp.org/turku-parser-models/models_en_craft_v4.0.0.tar.gz).
+
+This `en_craft_v4.0.0` model uses an updated version of the parser incorporating Udify and pre-trained BioBERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/jmnybl/turku-neural-parser-colab). Remember to change the default model name to `en_craft_v4.0.0` when running the notebook.
+
+Instructions how to run the new parser locally will be available soon.
+
 
 
