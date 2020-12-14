@@ -15,7 +15,7 @@ import torch.nn.functional as F
 #from pytorch_pretrained_bert.tokenization import BertTokenizer
 #from pytorch_pretrained_bert.modeling import BertModel, BertConfig
 
-from transformers import PreTrainedModel
+from transformers import PreTrainedModel, PretrainedConfig
 from transformers import BertTokenizer, BertModel, BertConfig
 
 from allennlp.common.util import pad_sequence_to_length
@@ -608,7 +608,9 @@ class UdifyPredictionBertEmbedder(BertEmbedder):
                  dropout: float = 0.1,
                  layer_dropout: float = 0.1,
                  combine_layers: str = "mix") -> None:
-        model = BertModel(BertConfig.from_json_file(bert_config, output_hidden_states=True))
+        
+        config = BertConfig.from_pretrained(bert_config, output_hidden_states=True)
+        model = BertModel(config)
 
         for param in model.parameters():
             param.requires_grad = requires_grad

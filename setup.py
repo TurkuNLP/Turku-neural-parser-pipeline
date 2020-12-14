@@ -31,5 +31,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=["requests","flask","ufal.udpipe","numpy","pyyaml","configargparse","transformers==2.11.0","allennlp==0.9.0","torchtext>=0.8.0","OpenNMT-py"]
+    install_requires=["requests","flask","ufal.udpipe","numpy","pyyaml","configargparse","transformers==2.11.0","allennlp==0.9.0","torchtext>=0.4.0","OpenNMT-py>=1.2.0","torch>=1.6.0"]
 )
