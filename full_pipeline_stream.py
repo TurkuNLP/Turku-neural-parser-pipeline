@@ -50,8 +50,8 @@ if __name__=="__main__":
     args.__dict__["udify_mod.device"]=args.device
     args.__dict__["lemmatizer_mod.device"]=args.device
 
-
     pipelines=read_pipelines(args.conf_yaml)
+
 
     if args.action=="list":
         print(sorted(pipelines.keys()),file=sys.stderr,flush=True)
@@ -67,6 +67,10 @@ if __name__=="__main__":
         newoptions=extraoptions+sys.argv[1:]
         print("Got extra arguments from the pipeline, now running with", newoptions, file=sys.stderr, flush=True)
         args=argparser.parse_args(newoptions)
+        
+        args.__dict__["udify_mod.device"]=args.device # not sure why we need to add these again
+        args.__dict__["lemmatizer_mod.device"]=args.device
+
 
     pipeline.append("output_mod")
     p=Pipeline(steps=pipeline, extra_args=args)
