@@ -10,6 +10,33 @@ layout: default
 
 The 82 models for all languages in the CoNLL-18 Shared Task are available for download. Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser.
 
+## Finnish TDT latest (v2.7)
+
+The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [models_fi_tdt_v2.7](http://dl.turkunlp.org/turku-parser-models/models_fi_tdt_v2.7.tar.gz)
+
+This `fi_tdt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained FinBERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb).
+
+Instructions how to run the new parser locally will be available soon.
+
+Evaluation results on UD_Finnish-TDT test section with predicted segmentation:
+
+Metric     | Precision |    Recall |  F1 Score | AligndAcc
+-----------+-----------+-----------+-----------+-----------
+Tokens     |     99.72 |     99.66 |     99.69 |
+Sentences  |     88.18 |     84.89 |     86.50 |
+Words      |     99.72 |     99.64 |     99.68 |
+UPOS       |     98.30 |     98.23 |     98.26 |     98.58
+XPOS       |      0.00 |      0.00 |      0.00 |      0.00
+UFeats     |     96.59 |     96.52 |     96.55 |     96.86
+AllTags    |      0.00 |      0.00 |      0.00 |      0.00
+Lemmas     |     96.30 |     96.23 |     96.26 |     96.57
+UAS        |     93.59 |     93.52 |     93.55 |     93.86
+LAS        |     92.24 |     92.17 |     92.21 |     92.50
+CLAS       |     91.55 |     91.38 |     91.47 |     91.69
+MLAS       |     87.09 |     86.93 |     87.01 |     87.22
+BLEX       |     87.55 |     87.39 |     87.47 |     87.68
+
+
 ## Enhanced UD (IWPT ST 2020) <a id="iwpt"></a>
 
 The enhanced UD models for all IWPT 2020 Shared Task languages will be available soon.
@@ -22,11 +49,24 @@ This `en_craft_v4.0.0` model uses an updated version of the parser incorporating
 
 Instructions how to run the new parser locally will be available soon.
 
-## Finnish TDT latest (v2.7)
+Evaluation results on test section with gold segmentation (more details in the paper link below):
 
-The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [models_fi_tdt_v2.7](http://dl.turkunlp.org/turku-parser-models/models_fi_tdt_v2.7.tar.gz)
+Metric     | Precision |    Recall |  F1 Score | AligndAcc
+-----------+-----------+-----------+-----------+-----------
+Tokens     |    100.00 |    100.00 |    100.00 |
+Sentences  |    100.00 |    100.00 |    100.00 |
+Words      |    100.00 |    100.00 |    100.00 |
+UPOS       |     98.79 |     98.79 |     98.79 |     98.79
+XPOS       |      0.00 |      0.00 |      0.00 |      0.00
+UFeats     |     98.79 |     98.79 |     98.79 |     98.79
+AllTags    |      0.00 |      0.00 |      0.00 |      0.00
+Lemmas     |     99.43 |     99.43 |     99.43 |     99.43
+UAS        |     93.45 |     93.45 |     93.45 |     93.45
+LAS        |     92.31 |     92.31 |     92.31 |     92.31
+CLAS       |     90.18 |     89.90 |     90.04 |     89.90
+MLAS       |     88.36 |     88.09 |     88.22 |     88.09
+BLEX       |     89.46 |     89.18 |     89.32 |     89.18
 
-This `fi_tdt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained FinBERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb).
+Reference and more details:
 
-Instructions how to run the new parser locally will be available soon.
-
+Available soon...
