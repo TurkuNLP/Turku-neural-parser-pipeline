@@ -20,6 +20,7 @@ Instructions how to run the new parser locally will be available soon.
 
 Evaluation results on UD_Finnish-TDT test section with predicted segmentation:
 
+```
 Metric     | Precision |    Recall |  F1 Score | AligndAcc
 -----------+-----------+-----------+-----------+-----------
 Tokens     |     99.72 |     99.66 |     99.69 |
@@ -35,7 +36,7 @@ LAS        |     92.24 |     92.17 |     92.21 |     92.50
 CLAS       |     91.55 |     91.38 |     91.47 |     91.69
 MLAS       |     87.09 |     86.93 |     87.01 |     87.22
 BLEX       |     87.55 |     87.39 |     87.47 |     87.68
-
+```
 
 ## Enhanced UD (IWPT ST 2020) <a id="iwpt"></a>
 
@@ -51,6 +52,7 @@ Instructions how to run the new parser locally will be available soon.
 
 Evaluation results on test section with gold segmentation (more details in the paper link below):
 
+```
 Metric     | Precision |    Recall |  F1 Score | AligndAcc
 -----------+-----------+-----------+-----------+-----------
 Tokens     |    100.00 |    100.00 |    100.00 |
@@ -66,6 +68,7 @@ LAS        |     92.31 |     92.31 |     92.31 |     92.31
 CLAS       |     90.18 |     89.90 |     90.04 |     89.90
 MLAS       |     88.36 |     88.09 |     88.22 |     88.09
 BLEX       |     89.46 |     89.18 |     89.32 |     89.18
+```
 
 Reference and more details:
 
