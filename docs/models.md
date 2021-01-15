@@ -40,9 +40,9 @@ BLEX       |     87.55 |     87.39 |     87.47 |     87.68
 
 ## English EWT latest (v2.7)
 
-The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [models_en_ewt_v2.7](http://dl.turkunlp.org/turku-parser-models/models_en_ewt_v2.7.tar.gz)
+The latest English EWT model trained on UD_English-EWT v2.7 is available here: [models_en_ewt_v2.7](http://dl.turkunlp.org/turku-parser-models/models_en_ewt_v2.7.tar.gz)
 
-This `en_ewt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained BERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb).
+This `en_ewt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained Google BERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb).
 
 Instructions how to run the new parser locally will be available soon.
 
@@ -98,5 +98,16 @@ BLEX       |     89.46 |     89.18 |     89.32 |     89.18
 ```
 
 Reference and more details:
-
-Available soon...
+```
+@article{kanerva2020dependency,
+  title={Dependency parsing of biomedical text with {BERT}},
+  author={Kanerva, Jenna and Ginter, Filip and Pyysalo, Sampo},
+  journal={BMC Bioinformatics},
+  volume={21},
+  number={23},
+  pages={1--12},
+  year={2020},
+  publisher={Springer},
+  url={https://doi.org/10.1186/s12859-020-03905-8},
+}
+```
