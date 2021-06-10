@@ -1,13 +1,31 @@
-#CPU server version listening on port 7689
-FROM turkunlp/turku-neural-parser:commonbase-cpu-latest
-WORKDIR /app
-ARG MODEL=fi_tdt
+#server version listening on port 7689
+FROM python:3 as tnpp_common
+WORKDIR /usr/src/app
+ENV VIRTUAL_ENV=/usr/src/app/venv-tnpp
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+COPY requirements.txt ./
+
+RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade --no-cache-dir -r requirements.txt
+
+#git clone -b diaparser https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
+COPY *.py ./
+COPY tnparser/ ./tnparser
+
+ARG MODEL=fi_tdt_dia
 ARG PIPELINE=parse_plaintext
 ARG PORT=7689
-ARG MAXCHAR=0
-ENV TNPP_MODELNAME ${MODEL}
+ARG MAX_CHARS=0
+
+ENV TNPP_MODEL models_${MODEL}/pipelines.yaml
 ENV TNPP_PIPELINE ${PIPELINE}
 ENV TNPP_PORT ${PORT}
-ENV TNPP_MAXCHAR ${MAXCHAR}
+ENV TNPP_MAX_CHARS ${MAX_CHARS}
+
 RUN python3 fetch_models.py $MODEL
-CMD python full_pipeline_server.py --host 0.0.0.0 --max-char ${TNPP_MAXCHAR} --port ${TNPP_PORT} --conf "models_${TNPP_MODELNAME}/pipelines.yaml" --gpu -1 "${TNPP_PIPELINE}"
+EXPOSE ${TNPP_PORT}
+ENV FLASK_APP tnpp_serve
+CMD flask run --host 0.0.0.0 --port ${TNPP_PORT}
+
