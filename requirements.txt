@@ -8,3 +8,4 @@ configargparse
 transformers
 torch
 OpenNMT-py>=1.2.0
+diaparser
