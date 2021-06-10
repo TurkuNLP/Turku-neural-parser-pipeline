@@ -38,7 +38,7 @@ class UDPipeTokenizerWrapper():
                 if current_block:
                     tokenized+=self.pipeline.process("\n".join(current_block),err)
                     current_block=[]
-                tokenized+=re.sub(comment_regex, "# ", line.lstrip()+"\n")
+                tokenized+=line.lstrip()+"\n"#re.sub(comment_regex, "# ", line.lstrip()+"\n")
                 continue
             # normal text line, save to current block to be tokenized
             current_block.append(line)

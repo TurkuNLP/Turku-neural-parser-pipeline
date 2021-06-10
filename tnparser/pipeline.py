@@ -17,7 +17,7 @@ def read_pipelines(fname):
 
 class Pipeline:
 
-    def __init__(self,steps, extra_args=None):
+    def __init__(self, steps, extra_args=None):
         """ """
         self.job_counter=0
         self.done_jobs={}
@@ -100,3 +100,11 @@ class Pipeline:
             else:
                 break
         return res
+
+    def parse_batched(self,inp,):
+        """inp: is a file-like object with input data
+           yield_res: 
+           """
+        pass
+           
+        
