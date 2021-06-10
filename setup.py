@@ -16,7 +16,7 @@ packages=dirs
     
 setuptools.setup(
     name="turku-neural-parser", # Replace with your own username
-    version="0.3",
+    version="2.0",
     author="Filip Ginter",
     author_email="filip.ginter@gmail.com",
     description="Turku Neural Parser Pipeline",
@@ -31,5 +31,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=["requests","flask","ufal.udpipe","numpy","pyyaml","configargparse","transformers==2.11.0","allennlp==0.9.0","torchtext>=0.4.0","OpenNMT-py>=1.2.0","torch>=1.6.0"]
+    install_requires=["requests","flask","ufal.udpipe","numpy","pyyaml","configargparse","OpenNMT-py>=1.2.0","torch","diaparser","transformers"]
 )
