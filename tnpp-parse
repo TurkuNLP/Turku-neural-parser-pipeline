@@ -6,10 +6,10 @@ text1="Minulla on söpö koira. Se haukkuu ja syö makkaraa, ja todellakin roi3:
 
 
 # What do we have for English in models_en_ewt?
-available_pipelines=read_pipelines("models_fi_tdt/pipelines.yaml")               # {pipeline_name -> its steps}
+available_pipelines=read_pipelines("models_fi_tdt_dia/pipelines.yaml")               # {pipeline_name -> its steps}
 #print(list(available_pipelines.keys()))
 p=Pipeline(available_pipelines["parse_plaintext"])                                      # launch the pipeline from the steps
 
-print(p.parse(text1))
+print(p.parse(text1), end="")
 
     
