@@ -90,7 +90,7 @@ def main(args):
     steps_train = steps_per_epoch*args.epochs
     
     # callbacks
-    checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor='val_loss', dirpath=args.checkpoint_dir, filename='best', save_top_k=1, mode='min', save_last=True, verbose=True)
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor='val_loss', dirpath=args.checkpoint_dir, filename='best', save_top_k=1, mode='min', save_last=True, save_weights_only=True, verbose=True)
     #freezer_callback = FinetuneFreezer(unfreeze_epoch=args.freeze_encoder)
     
     # train
