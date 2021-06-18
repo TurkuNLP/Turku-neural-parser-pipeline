@@ -2,7 +2,7 @@
 
 from tnparser.pipeline import read_pipelines, Pipeline
 
-text1="Minulla on söpö koira. Se haukkuu ja syö makkaraa, ja todellakin roi3:sta sekä poppedilliä ja tsillailee!"
+text1="Minulla on söpö koira. Se haukkuu ja syö makkaraa, ja todellakin roi3:sta sekä poppedilliä ja tsillailee! Ettei se vaan lähtisi karkaamaan."
 
 
 # What do we have for English in models_en_ewt?

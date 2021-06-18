@@ -10,6 +10,8 @@ from tempfile import NamedTemporaryFile
 from diaparser.parsers import Parser
 
 
+ID,FORM,LEMMA,UPOS,XPOS,FEAT,HEAD,DEPREL,DEPS,MISC=range(10)
+
 def read_conllu(txt):
     sent=[]
     comment=[]
@@ -23,7 +25,8 @@ def read_conllu(txt):
         elif line.startswith("#"):
             comment.append(line)
         else: #normal line
-            sent.append(line.split("\t"))
+            cols=line.split("\t")
+            sent.append(cols)
     else:
         if sent:
             yield comment, sent
@@ -31,11 +34,29 @@ def read_conllu(txt):
 def conllu2dataset(conllu):
     dset=[]
     all_comments=[]
+    all_sentences=[]
     for comments,sent in read_conllu(conllu):
-        tokens=[line[1] for line in sent]
+        tokens=[line[FORM] for line in sent if line[ID].isdigit()] #gather only those tokens you really want to parse
         dset.append(tokens)
         all_comments.append(comments)
-    return all_comments,dset
+        all_sentences.append(sent)
+    return all_comments,all_sentences,dset
+
+def merge(comments,sent,parser_out_sent):
+    i=0
+    for row in sent:
+        if row[ID].isdigit():
+            row[HEAD]=str(parser_out_sent.values[HEAD][i])
+            row[DEPREL]=parser_out_sent.values[DEPREL][i]
+            i+=1
+    if comments:
+        result="\n".join(comments)+"\n"
+    else:
+        result=""
+    result+="\n".join("\t".join(row) for row in sent)
+    result+="\n\n"
+    return result
+    
 
 def launch(args, q_in, q_out):
     try:
@@ -49,14 +70,12 @@ def launch(args, q_in, q_out):
             q_out.put((jobid,txt))
             return
         try:
-            comments,dset=conllu2dataset(txt)
+            comments,sents,dset=conllu2dataset(txt)
             predicted=parser.predict(dset)
             res=[]
-            for comm,sent in zip(comments,predicted.sentences):
-                if comm:
-                    res.append("\n".join(comm))
-                res.append(str(sent))
-            q_out.put((jobid,"\n".join(res)))
+            for comm,sent,parser_out in zip(comments,sents,predicted.sentences):
+                res.append(merge(comm,sent,parser_out))
+            q_out.put((jobid,"".join(res)))
         except:
             traceback.print_exc()
             sys.stderr.flush()
