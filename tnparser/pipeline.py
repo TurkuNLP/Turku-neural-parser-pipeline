@@ -1,4 +1,5 @@
 from multiprocessing import Process,Queue
+import multiprocessing as multiprocessing
 import importlib
 import hashlib
 import random
@@ -19,10 +20,11 @@ class Pipeline:
 
     def __init__(self, steps, extra_args=None):
         """ """
+        self.ctx=multiprocessing.get_context()
         self.job_counter=0
         self.done_jobs={}
         self.max_q_size=5
-        self.q_in=Queue(self.max_q_size) #where to send data to the whole pipeline
+        self.q_in=self.ctx.Queue(self.max_q_size) #where to send data to the whole pipeline
         self.q_out=self.q_in #where to receive data from the whole pipeline
         self.processes=[]
 
@@ -54,9 +56,9 @@ class Pipeline:
 
         mod=importlib.import_module("tnparser."+module_name)
         step_in=self.q_out
-        self.q_out=Queue(self.max_q_size) #new pipeline end
+        self.q_out=self.ctx.Queue(self.max_q_size) #new pipeline end
         args=mod.argparser.parse_args(params)
-        process=Process(target=mod.launch,args=(args,step_in,self.q_out))
+        process=self.ctx.Process(target=mod.launch,args=(args,step_in,self.q_out))
         process.daemon=True
         process.start()
         self.processes.append(process)
