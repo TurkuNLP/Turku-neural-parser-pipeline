@@ -86,6 +86,6 @@ def launch(args, q_in, q_out):
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--bert_pretrained', type=str, default='TurkuNLP/bert-base-finnish-cased-v1')
-argparser.add_argument('--batch_size', type=int, default=32)
+argparser.add_argument('--batch_size', type=int, default=16)
 argparser.add_argument('--checkpoint_dir', default="checkpoints", type=str)
 
