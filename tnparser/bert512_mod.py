@@ -47,7 +47,7 @@ def launch(args, q_in, q_out):
                 split_batch.append((comment,split_sents[0]))
                 for ss in split_sents[1:]:
                     split_batch.append((["### TNPP MERGE INTO PREVIOUS"],ss))
-                    q_out.put((jobid,format_conllu(split_batch)))
+            q_out.put((jobid,format_conllu(split_batch)))
     else:
         #our job is to merge
         while True:
