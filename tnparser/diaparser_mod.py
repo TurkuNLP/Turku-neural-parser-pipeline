@@ -71,7 +71,7 @@ def launch(args, q_in, q_out):
             return
         try:
             comments,sents,dset=conllu2dataset(txt)
-            predicted=parser.predict(dset)
+            predicted=parser.predict(dset,batch_size=1000)
             res=[]
             for comm,sent,parser_out in zip(comments,sents,predicted.sentences):
                 res.append(merge(comm,sent,parser_out))
