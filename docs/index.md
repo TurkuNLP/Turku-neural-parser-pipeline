@@ -4,10 +4,12 @@ layout: default
 
 # Turku neural parser pipeline
 
-A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>.
+A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>. The pipeline has been improved upon since this shared task (latest **major overhaul in June 2021**)
 
 <div class="latest" markdown="1">
 LATEST:
+
+June, 2021: **Complete overhaul** 1) restructured as a python package, 2) Udify replaced with diaparser, 3) new tagger; A lot more sane requirements.txt.
 
 May 27, 2019: **GPU docker images** available. See the [instructions here](docker.html).
 
@@ -26,33 +28,25 @@ Dec 14, 2018: **Faster lemmatizer**, major updates for the lemmatizer making it 
 
 ## Finnish
 
-The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation, compared to the old Finnish-dep-parser, used by many. These are the current numbers for Finnish, measured using the CoNLL18 ST evaluation script on Finnish-TDT UD ver 2.2 data. **This is the "fi_tdt" model distributed with the parser**
+The current pipeline is fully neural and has a substantially better accuracy in all layers of annotation, compared to the old Finnish-dep-parser, used by many.
 
-```
-Metric     | Precision |    Recall |  F1 Score | AligndAcc
------------+-----------+-----------+-----------+-----------
-Tokens     |     99.74 |     99.63 |     99.69 |
-Sentences  |     88.55 |     85.02 |     86.75 |
-Words      |     99.74 |     99.63 |     99.69 |
-UPOS       |     96.63 |     96.52 |     96.57 |     96.88
-XPOS       |     97.66 |     97.55 |     97.61 |     97.92
-UFeats     |     95.47 |     95.36 |     95.41 |     95.71
-AllTags    |     94.03 |     93.92 |     93.97 |     94.27
-Lemmas     |     95.30 |     95.19 |     95.24 |     95.54
-UAS        |     89.04 |     88.94 |     88.99 |     89.27
-LAS        |     86.53 |     86.43 |     86.48 |     86.75
-CLAS       |     85.24 |     85.21 |     85.22 |     85.46
-MLAS       |     79.86 |     79.83 |     79.85 |     80.07
-BLEX       |     81.07 |     81.04 |     81.05 |     81.27
-``` 
+## Other languages
 
-# Docker Images
-
-The Docker images are an easy way to run the parser without installing all the dependencies. See the instructions [here](docker.html).
+Models for languages other than Finnish are currently being trained. Stay tuned!
 
 # Installation
 
-The installation of the parser, with its dependencies, is described [here](install.html)
+## From sources
+
+```
+git clone https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
+cd Turku-neural-parser-pipeline
+python3 -m venv venv-tnpp
+source venv-tnpp/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade setuptools
+python3 -m pip install -r requirements.txt
+```
 
 # Training
 
@@ -60,33 +54,25 @@ Training new models is described [here](training.html)
 
 # Models
 
-The 82 models for all languages in the CoNLL-18 Shared Task are available for download. Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser or [here](docker.html#images-for-other-languages) for the Docker version of the parser.
+Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser.
 
 # Running the parser -- short version
 
-See [here](docker.html) for running the Docker version of the parser.
+In the basic streaming mode `tnpp_parse.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as (with GPU lemmatizer):
 
-In the basic streaming mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as (with GPU lemmatizer):
-
-    echo "Minulla on koira." | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext
-    
-or (with CPU lemmatizer)
-
-    echo "Minulla on koira." | python3 full_pipeline_stream.py --gpu -1 --conf models_fi_tdt/pipelines.yaml parse_plaintext
-
+    echo "Minulla on koira." | python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml parse_plaintext
 
 # Running the parser -- long version
 
 The parser has these properties:
 
-* a long start-up cost when it's loading the models (see the server mode to prevent model reloading)
+* a start-up cost when it's loading the models (see the server mode to prevent model reloading)
 * very fast when parsing large documents because of the mini-batch style of computing
-* efficient use of GPU, 5x faster than the previous Finnish-dep-parser (which could not use GPU for anything)
 * transparent handling of metadata
 
 ## Input and Output formats
 
-When running with default mode (`parse_plaintext`) the input must **utf-8** encoded plain text. Paragraph and document boundaries should be marked with an empty line (note that single line break does not indicate text boundary, and lines separated with a single line break can be merged by the tokenizer).
+When running with default mode (`parse_plaintext`) the input must be **utf-8** encoded plain text. Paragraph and document boundaries should be marked with an empty line (note that single line break does not indicate text boundary, and lines separated with a single line break can be merged by the tokenizer).
 
 The output format of the parser is CoNLL-U, described in detail [here](https://universaldependencies.org/format.html).
 
@@ -98,7 +84,7 @@ In the input data, all lines which start with `###C:` are treated as metadata an
 
 Various pipelines can be built out of the components of the parser and these are generally defined in model_directory/pipelines.yaml. You can also list what you have like so:
 
-    python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml list
+    python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml list
 
 For Finnish these are:
 
