@@ -20,7 +20,6 @@ def launch(args,q_in,q_out):
         if start is None:
             start=time.time()
             next_report=start+10.0 #report every 10sec at most
-            print("HITHERE",file=sys.stderr,flush=True)
         else:
             total_parsed_trees+=sum(1 for line in txt.split("\n") if line.startswith("1\t"))
             total_parsed_tokens+=sum(1 for line in txt.split("\n") if re.match(token_regex, line))
