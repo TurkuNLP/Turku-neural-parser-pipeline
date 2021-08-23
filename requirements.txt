@@ -1,4 +1,4 @@
-wheel
+torch>=1.9
 requests
 flask
 numpy
