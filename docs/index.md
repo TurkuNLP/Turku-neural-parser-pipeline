@@ -4,12 +4,14 @@ layout: default
 
 # Turku neural parser pipeline
 
-A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>. The pipeline has been improved upon since this shared task (latest **major overhaul in June 2021**)  Looking for the **old version** of the parser (prior to August 2021)? The code is TODO and the old documentation is [linked here](old/index.html).
+A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>. The pipeline has been improved upon since this shared task (latest **major overhaul in June 2021**)
+
+Looking for the **old version** of the parser (prior to August 2021)? The code is TODO and the old documentation is [linked here](old/index.html).
 
 <div class="latest" markdown="1">
 LATEST:
 
-June, 2021: **Complete overhaul** 1) restructured as a python package, 2) Udify replaced with diaparser, 3) new tagger; A lot more sane requirements.txt. Old version of this page with all documentation is [here](old/index.html).
+**June, 2021**: **Complete overhaul** 1) restructured as a python package, 2) Udify replaced with diaparser, 3) new tagger; A lot more sane requirements.txt. Old version of this page with all documentation is [here](old/index.html).
     
 </div>
 
@@ -43,7 +45,7 @@ or you can simply download and unzip the model file linked from the [models list
 
 ## Running on Google Colab
 
-This is an easy way to run the parser with GPU acceleration. Please see the Colab Notebook [here](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/diaparser/docs/tnpp_diaparse.ipynb) or [open it directly on Google Colab](https://colab.research.google.com/github/TurkuNLP/Turku-neural-parser-pipeline/blob/diaparser/docs/tnpp_diaparse.ipynb).
+This is an easy way to run the parser with GPU acceleration. Please see the Colab Notebook [here](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/master/docs/tnpp_diaparse.ipynb) or [open it directly on Google Colab](https://colab.research.google.com/github/TurkuNLP/Turku-neural-parser-pipeline/blob/master/docs/tnpp_diaparse.ipynb).
 
 ## Running on command line, just give me the command
 
