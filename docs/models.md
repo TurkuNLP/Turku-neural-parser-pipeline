@@ -6,17 +6,9 @@ layout: default
 
 # Models
 
-## UD 2.2
-
-The 82 models for all languages in the CoNLL-18 Shared Task are available for download. Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser.
-
 ## Finnish TDT latest (v2.7)
 
-The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [models_fi_tdt_v2.7](http://dl.turkunlp.org/turku-parser-models/models_fi_tdt_v2.7.tar.gz)
-
-This `fi_tdt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained FinBERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb).
-
-Instructions how to run the new parser locally will be available soon.
+The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [models_fi_tdt_dia.tgz](http://dl.turkunlp.org/turku-parser-models/models_fi_tdt_dia.tgz)
 
 Evaluation results on UD_Finnish-TDT test section with predicted segmentation:
 
@@ -40,11 +32,7 @@ BLEX       |     87.55 |     87.39 |     87.47 |     87.68
 
 ## English EWT latest (v2.7)
 
-The latest English EWT model trained on UD_English-EWT v2.7 is available here: [models_en_ewt_v2.7](http://dl.turkunlp.org/turku-parser-models/models_en_ewt_v2.7.tar.gz)
-
-This `en_ewt_v2.7` model uses an updated version of the parser incorporating Udify and pre-trained Google BERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb).
-
-Instructions how to run the new parser locally will be available soon.
+The latest English EWT model trained on UD_English-EWT v2.7 is upcoming
 
 Evaluation results on UD_English-EWT test section with predicted segmentation:
 ```
@@ -65,17 +53,9 @@ MLAS       |     80.26 |     80.19 |     80.22 |     81.19
 BLEX       |     83.32 |     83.25 |     83.28 |     84.29
 ```
 
-## Enhanced UD (IWPT ST 2020) <a id="iwpt"></a>
-
-The enhanced UD models for all IWPT 2020 Shared Task languages will be available soon.
-
 ## Biomedical English (CRAFT) <a id="craft"></a>
 
-The Biomedical English model trained on CRAFT corpus v4.0.0 is available here: [models_en_craft_v4.0.0](http://dl.turkunlp.org/turku-parser-models/models_en_craft_v4.0.0.tar.gz).
-
-This `en_craft_v4.0.0` model uses an updated version of the parser incorporating Udify and pre-trained BioBERT language model. Instructions how to run the new parser on Google Colab are available here: [turku-neural-parser-colab](https://github.com/TurkuNLP/Turku-neural-parser-pipeline/blob/modularize/turku_neural_parser_colab.ipynb). Remember to change the default model name to `en_craft_v4.0.0` when running the notebook.
-
-Instructions how to run the new parser locally will be available soon.
+The Biomedical English model trained on CRAFT corpus v4.0.0 is upcoming
 
 Evaluation results on test section with gold segmentation (more details in the paper link below):
 
