@@ -16,6 +16,9 @@ Docker on OSX and Windows is configured with a default tight memory limit which 
 In case you get encoding issues in Windows PowerShell, try to enforce `utf-8` as shown in <a href="https://github.com/TurkuNLP/Turku-neural-parser-pipeline/issues/21">issue #21</a>
 </div>
 
+
+
+
 We provide docker images for both cpu and gpu architectures. When launching a container based upon these images, it is possible to select:
 
   * Whether to run the parser in a one-shot stdin-stdout streaming mode or a server mode which does not reload the model on every request

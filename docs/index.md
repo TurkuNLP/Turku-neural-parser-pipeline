@@ -4,25 +4,12 @@ layout: default
 
 # Turku neural parser pipeline
 
-A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>. The pipeline has been improved upon since this shared task (latest **major overhaul in June 2021**)
+A neural parsing pipeline for **segmentation, morphological tagging, dependency parsing and lemmatization with pre-trained models for more than 50 languages**. The pipeline ranked **1st on lemmatization, and 2nd on both LAS and MLAS** (morphology-aware LAS) on the CoNLL-18 Shared Task on Parsing Universal Dependencies. Accuracies for all languages, see TurkuNLP at <https://universaldependencies.org/conll18/results.html>. The pipeline has been improved upon since this shared task (latest **major overhaul in June 2021**)  Looking for the **old version** of the parser (prior to August 2021)? The code is TODO and the old documentation is [linked here](old/index.html).
 
 <div class="latest" markdown="1">
 LATEST:
 
-June, 2021: **Complete overhaul** 1) restructured as a python package, 2) Udify replaced with diaparser, 3) new tagger; A lot more sane requirements.txt.
-
-May 27, 2019: **GPU docker images** available. See the [instructions here](docker.html).
-
-Mar 05, 2019: **Server-mode docker images** available for parsing without re-loading the model between requests. See the 
-[instructions here](docker.html)
-
-Dec 28, 2018: **Docker images** available. See the [instructions here](docker.html).
-
-Dec 18, 2018: **Finnish model updated** (fi_tdt), should be now faster as it includes a bigger precomputed lemma cache (no changes in accuracy)
-    --> run `python3 fetch_models.py fi_tdt` to get the latest
-
-Dec 14, 2018: **Faster lemmatizer**, major updates for the lemmatizer making it considerably faster (no changes in accuracy).
-    --> Pipeline needs clean instalation (requirements also changed)!
+June, 2021: **Complete overhaul** 1) restructured as a python package, 2) Udify replaced with diaparser, 3) new tagger; A lot more sane requirements.txt. Old version of this page with all documentation is [here](old/index.html).
     
 </div>
 
@@ -32,7 +19,7 @@ The current pipeline is fully neural and has a substantially better accuracy in 
 
 ## Other languages
 
-Models for languages other than Finnish are currently being trained. Stay tuned!
+Models for languages other than Finnish and English are currently being trained. Stay tuned!
 
 # Installation
 
@@ -48,18 +35,15 @@ python3 -m pip install --upgrade setuptools
 python3 -m pip install -r requirements.txt
 ```
 
-# Training
-
-Training new models is described [here](training.html)
-
 # Models
 
 Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser.
 
 # Running the parser -- short version
 
-In the basic streaming mode `tnpp_parse.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as (with GPU lemmatizer):
+In the basic streaming mode `tnpp_parse.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as:
 
+    #remember to run `python3 fetch_models.py fi_tdt_dia` if you have not done so yet
     echo "Minulla on koira." | python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml parse_plaintext
 
 # Running the parser -- long version
@@ -101,7 +85,7 @@ Other pipelines (which skip some of these steps etc) can be built easily by mimi
 
 In the stream mode `full_pipeline_stream.py`, the parser reads from stdin, outputs to stdout. You need to give it the file with pipelines and you need to tell it which pipeline to run (parse_plaintext is the default). So you can run the parser as:
 
-    cat myfile.txt | python3 full_pipeline_stream.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
+    cat myfile.txt | python3 tnpp_parse.py --conf models_fi_tdt/pipelines.yaml parse_plaintext > myfile.conllu
 
 ## Server mode
 
