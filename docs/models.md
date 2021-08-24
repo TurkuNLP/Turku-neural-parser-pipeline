@@ -6,9 +6,9 @@ layout: default
 
 # Models
 
-## Finnish TDT latest (v2.7)
+## Finnish TDT latest (v2.8)
 
-The latest Finnish TDT model trained on UD_Finnish-TDT v2.7 is available here: [models_fi_tdt_dia.tgz](http://dl.turkunlp.org/turku-parser-models/models_fi_tdt_dia.tgz)
+The latest Finnish TDT model trained on UD_Finnish-TDT v2.8 is available here: [models_fi_tdt_dia.tgz](http://dl.turkunlp.org/turku-parser-models/models_fi_tdt_dia.tgz)
 
 Evaluation results on UD_Finnish-TDT test section with predicted segmentation:
 
@@ -18,39 +18,39 @@ Metric     | Precision |    Recall |  F1 Score | AligndAcc
 Tokens     |     99.72 |     99.66 |     99.69 |
 Sentences  |     88.18 |     84.89 |     86.50 |
 Words      |     99.72 |     99.64 |     99.68 |
-UPOS       |     98.30 |     98.23 |     98.26 |     98.58
+UPOS       |     97.84 |     97.77 |     97.80 |     98.12
 XPOS       |      0.00 |      0.00 |      0.00 |      0.00
-UFeats     |     96.59 |     96.52 |     96.55 |     96.86
+UFeats     |     96.46 |     96.39 |     96.42 |     96.73
 AllTags    |      0.00 |      0.00 |      0.00 |      0.00
-Lemmas     |     96.30 |     96.23 |     96.26 |     96.57
-UAS        |     93.59 |     93.52 |     93.55 |     93.86
-LAS        |     92.24 |     92.17 |     92.21 |     92.50
-CLAS       |     91.55 |     91.38 |     91.47 |     91.69
-MLAS       |     87.09 |     86.93 |     87.01 |     87.22
-BLEX       |     87.55 |     87.39 |     87.47 |     87.68
+Lemmas     |     96.17 |     96.10 |     96.13 |     96.44
+UAS        |     92.93 |     92.87 |     92.90 |     93.20
+LAS        |     91.27 |     91.21 |     91.24 |     91.53
+CLAS       |     90.64 |     90.45 |     90.55 |     90.75
+MLAS       |     85.63 |     85.44 |     85.53 |     85.73
+BLEX       |     86.51 |     86.32 |     86.42 |     86.61
 ```
 
-## English EWT latest (v2.7)
+## English EWT latest (v2.8)
 
-The latest English EWT model trained on UD_English-EWT v2.7 is upcoming
+The latest English EWT model (general English) trained on UD_English-EWT v2.8 is available here: [models_en_ewt_dia.tgz](http://dl.turkunlp.org/turku-parser-models/models_en_ewt_dia.tgz)
 
 Evaluation results on UD_English-EWT test section with predicted segmentation:
 ```
 Metric     | Precision |    Recall |  F1 Score | AligndAcc
 -----------+-----------+-----------+-----------+-----------
-Tokens     |     98.96 |     99.05 |     99.00 |
-Sentences  |     89.57 |     82.72 |     86.01 |
-Words      |     98.85 |     98.92 |     98.88 |
-UPOS       |     95.99 |     96.07 |     96.03 |     97.11
+Tokens     |     99.35 |     99.16 |     99.25 |
+Sentences  |     88.36 |     83.29 |     85.75 |
+Words      |     99.14 |     98.86 |     99.00 |
+UPOS       |     95.45 |     95.19 |     95.32 |     96.28
 XPOS       |      0.00 |      0.00 |      0.00 |      0.00
-UFeats     |     96.37 |     96.45 |     96.41 |     97.49
+UFeats     |     96.06 |     95.79 |     95.92 |     96.89
 AllTags    |      0.00 |      0.00 |      0.00 |      0.00
-Lemmas     |     97.34 |     97.42 |     97.38 |     98.48
-UAS        |     89.41 |     89.48 |     89.44 |     90.45
-LAS        |     87.30 |     87.37 |     87.33 |     88.32
-CLAS       |     84.81 |     84.74 |     84.78 |     85.80
-MLAS       |     80.26 |     80.19 |     80.22 |     81.19
-BLEX       |     83.32 |     83.25 |     83.28 |     84.29
+Lemmas     |     96.72 |     96.46 |     96.59 |     97.57
+UAS        |     89.84 |     89.59 |     89.71 |     90.62
+LAS        |     87.62 |     87.38 |     87.50 |     88.38
+CLAS       |     84.99 |     84.76 |     84.88 |     85.76
+MLAS       |     79.24 |     79.03 |     79.14 |     79.96
+BLEX       |     82.34 |     82.13 |     82.23 |     83.09
 ```
 
 ## Biomedical English (CRAFT) <a id="craft"></a>
