@@ -7,7 +7,7 @@ pyyaml
 configargparse
 transformers
 OpenNMT-py>=1.2.0
-diaparser
+git+git://github.com/TurkuNLP/diaparser.git@master
 pytorch_lightning
 torchmetrics
 scikit-learn>=0.24
