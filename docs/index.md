@@ -52,7 +52,7 @@ This is an easy way to run the parser with GPU acceleration. Please see the Cola
 In the basic streaming mode `tnpp_parse.py`, the parser reads from stdin, outputs to stdout. You need to give it a file with pipelines (distributed together with each model), and you need to tell it which pipeline to run (parse_plaintext for running segmentation, tagging, syntax and lemmatization; parse_conllu for running tagger, syntax and lemmatization for presegmented conllu-file). So after downloading a model, you can run the parser as:
 
     #remember to fetch model if you have not done so yet
-    echo "Minulla on koira." | python3 tnpp_parse.py --conf models_fi_tdt/pipelines.yaml parse_plaintext
+    echo "Minulla on koira." | python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml parse_plaintext
 
 Of course note that there is a nontrival time needed to load the models into memory, so you should avoid repeatedly restarting the parser when parsing longer collections of text.
 
