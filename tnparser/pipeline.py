@@ -6,6 +6,8 @@ import random
 import time
 import os
 import yaml
+from signal import signal, SIGCHLD
+import sys
 
 def read_pipelines(fname):
     absdir=os.path.dirname(os.path.abspath(fname))
@@ -26,10 +28,35 @@ class Pipeline:
         self.max_q_size=5
         self.q_in=self.ctx.Queue(self.max_q_size) #where to send data to the whole pipeline
         self.q_out=self.q_in #where to receive data from the whole pipeline
+        self.modules = []
         self.processes=[]
 
         for mod_name_and_params in steps:
             self.add_step(mod_name_and_params, extra_args)
+        try:
+            signal(SIGCHLD, self.handle_sigchld)
+        except ValueError:
+            print(
+                "Warning: could not install SIGCHLD handler. "
+                "Pipeline will not terminate if children exit abnormally."
+            )
+
+    def handle_sigchld(self, signum, frame):
+        while 1:
+            pid, exitno = os.waitpid(0, os.WNOHANG)
+            if pid == 0:
+                return
+            if exitno == 0:
+                continue
+            for module, process in zip(self.modules, self.processes):
+                if process.pid != pid:
+                    continue
+                print(
+                    f"Error: pipeline stage died with exit code {exitno}: {module}",
+                    file=sys.stderr,
+                    flush=True
+                )
+                sys.exit(-64)
 
     def join(self):
         for p in self.processes:
@@ -61,6 +88,7 @@ class Pipeline:
         process=self.ctx.Process(target=mod.launch,args=(args,step_in,self.q_out))
         process.daemon=True
         process.start()
+        self.modules.append(module_name_and_params)
         self.processes.append(process)
 
     def send_final(self):
