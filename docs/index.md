@@ -54,7 +54,7 @@ In the basic streaming mode `tnpp_parse.py`, the parser reads from stdin, output
     #remember to fetch model if you have not done so yet
     echo "Minulla on koira." | python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml parse_plaintext
 
-Of course note that there is a nontrival time needed to load the models into memory, so you should avoid repeatedly restarting the parser when parsing longer collections of text.
+Of course note that there is a nontrival time needed to load the models into memory, so you should avoid repeatedly restarting the parser when parsing longer collections of text. **By default the parser utilizes GPU if available, devices can be controlled with `CUDA_VISIBLE_DEVICES` environment variable.**
 
 ## Running on command line, more detailed introduction
 
@@ -96,6 +96,10 @@ Other pipelines (which skip some of these steps etc) can be built easily by mimi
 In the stream mode `tnpp_parse.py`, the parser reads from stdin, outputs to stdout. You need to give it the file with pipelines and you need to tell it which pipeline to run (parse_plaintext is the default). So you can run the parser as:
 
     cat myfile.txt | python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml parse_plaintext > myfile.conllu
+    
+By default the parser utilizes GPU if available, devices can be controlled with `CUDA_VISIBLE_DEVICES` environment variable. Running the parser on CPU when your machine has a GPU available:
+
+    cat myfile.txt | CUDA_VISIBLE_DEVICES=-1 python3 tnpp_parse.py --conf models_fi_tdt_dia/pipelines.yaml parse_plaintext > myfile.conllu
 
 ### Server mode
 
