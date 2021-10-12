@@ -48,28 +48,28 @@ class Lemmatizer(object):
         
     def init_model(self, args):
         
-        use_gpu = False if args.device < 0 else True
+        use_gpu = True if torch.cuda.is_available() else False
+        device = 0 if use_gpu else -1
+        print("Lemmatizer device:", "gpu" if use_gpu else "cpu", "/", device, file=sys.stderr)
+
         self.batch_size = args.batch_size
 
         # make virtual files to collect the predicted output (not actually needed but opennmt still requires this)
         self.f_output=io.StringIO()
 
-        self.translator = self.build_my_translator(args.model, self.f_output, use_gpu=use_gpu, gpu_device=args.device, beam_size=args.beam_size, max_length=args.max_length)
+        self.translator = self.build_my_translator(args.model, self.f_output, use_gpu=use_gpu, gpu_device=device, beam_size=args.beam_size, max_length=args.max_length)
 
         self.localcache={} #tokendata -> lemma  #remembered by this process, lost thereafter
         self.model_ready=True
         
         
-    def load_model(self, model, use_gpu=False, gpu_device=None, fp32=False):
+    def load_model(self, model, use_gpu=False, gpu_device=-1, fp32=False):
 
         checkpoint = torch.load(model, map_location=lambda storage, loc: storage)
         model_opt = ArgumentParser.ckpt_model_opts(checkpoint['opt'])
         ArgumentParser.update_model_opts(model_opt)
         ArgumentParser.validate_model_opts(model_opt)
         fields = checkpoint['vocab']
-
-        if isinstance(gpu_device, int) and gpu_device < 0:
-            gpu_device = None
 
         model = build_base_model(model_opt, fields, use_gpu, checkpoint, gpu_device) # use_gpu = True/False, gpu_device = int/None
         if fp32:
@@ -242,7 +242,7 @@ def launch(args,q_in,q_out):
 
 argparser = argparse.ArgumentParser(description='Lemmatize conllu text')
 argparser.add_argument('--model', default='models/lemmatizer.pt', type=str, help='Model')
-argparser.add_argument('--device', type=int, default=0, help='Gpu device id, if -1 use cpu')
+argparser.add_argument('--device', type=int, default=0, help='Deprecated, uses GPU if available.')
 argparser.add_argument('--batch_size', type=int, default=256, help='Batch size')
 argparser.add_argument('--max_length', type=int, default=50, help='Maximum predicted sequence length')
 argparser.add_argument('--beam_size', type=int, default=5, help='Decoding beam size')

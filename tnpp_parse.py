@@ -38,7 +38,7 @@ if __name__=="__main__":
     general_group.add_argument('--conf-yaml', default=os.path.join(THISDIR,"pipelines.yaml"), help='YAML with pipeline configs. Default: parser_dir/pipelines.yaml')
     general_group.add_argument('--empty-line-batching', default=False, action="store_true", help='Only ever batch on newlines (useful with pipelines that input conllu)')
     general_group.add_argument('--batch-lines', default=1000, type=int, help='Number of lines in a job batch. Default %(default)d, consider setting a higher value if using conllu input instead of raw text (maybe 5000 lines), and try smaller values in case of running out of memory with raw text.')
-    general_group.add_argument('--device', type=int, default=0, help='GPU device id, if -1 use CPU')
+    general_group.add_argument('--device', type=int, default=0, help='Deprecated, uses GPU if available, use CUDA_VISIBLE_DEVICES to control the gpu device.')
     general_group.add_argument('action', default="parse_plaintext", nargs='?', help="What to do. Either 'list' to lists pipelines or a pipeline name to parse, or nothing in which case the default parse_plaintext is used.")
 
 
@@ -62,7 +62,7 @@ if __name__=="__main__":
         print("Got extra arguments from the pipeline, now running with", newoptions, file=sys.stderr, flush=True)
         args=argparser.parse_args(newoptions)
         
-    args.__dict__["lemmatizer_mod.device"]=-1 #args.device force lemmatizer onto CPU
+    #args.__dict__["lemmatizer_mod.device"]=-1 #args.device force lemmatizer onto CPU
 
     pipeline.append("output_mod")
     p=Pipeline(steps=pipeline, extra_args=args)
