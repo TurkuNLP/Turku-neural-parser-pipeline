@@ -110,7 +110,7 @@ In the server mode, the parsing models are loaded only once, and kept in memory 
     export TNPP_PORT=7689
     export TNPP_MAX_CHARS=15000 # cut-off on character count to parse; protects from too large requests from web
     export FLASK_APP=tnpp_serve
-    flask run -host 0.0.0.0 --port $TNPP_PORT
+    flask run --host 0.0.0.0 --port $TNPP_PORT
 
 When the server is running, you can parse data with curl requests:
 
