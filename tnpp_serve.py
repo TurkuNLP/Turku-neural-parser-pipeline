@@ -26,7 +26,7 @@ def parse_post():
     global p,max_char
     txt=flask.request.get_data(as_text=True)
     if max_char>0:
-        txt=txt[:args.max_char]
+        txt=txt[:max_char]
     if not txt:
         return """You need to post your data as a single string. An example request would be curl --request POST --data 'Tämä on testilause' http://localhost:7689\n\n\n""",400
     else:
