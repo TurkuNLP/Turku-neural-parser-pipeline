@@ -1,8 +1,44 @@
-default:
-  train: placeholder
-  dev: placeholder
-  model_dir: placeholder
-  basic: true
-  preprocess_parameters: -src_words_min_frequency 5 -tgt_words_min_frequency 5
-  train_parameters: -gpu_ranks 0 -dropout 0.3 -optim adam -learning_rate 0.0005 -learning_rate_decay 0.9 -encoder_type brnn -batch_size 64
-  epochs: 20
+
+
+## Where the samples will be written
+save_data: tmp-lemmatizer/run/example
+
+## Where the vocab(s) will be written
+src_vocab: tmp-lemmatizer/run/example.vocab.src
+tgt_vocab: tmp-lemmatizer/run/example.vocab.tgt
+
+src_words_min_frequency: 5
+tgt_words_min_frequency: 5
+
+# Prevent overwriting existing files in the folder
+overwrite: True
+
+
+# Corpus opts:
+data:
+    corpus_1:
+        path_src: tmp-lemmatizer/train.input
+        path_tgt: tmp-lemmatizer/train.output
+    valid:
+        path_src: tmp-lemmatizer/devel.input
+        path_tgt: tmp-lemmatizer/devel.output
+
+# Train on a single GPU
+world_size: 1
+gpu_ranks: [0]
+
+
+save_checkpoint_steps: 2000
+keep_checkpoint: 25
+train_steps: 50000
+valid_steps: 2000
+warmup_steps: 1000
+report_every: 2000
+
+optim: adam
+learning_rate: 0.0005
+batch_size: 64
+valid_batch_size: 32
+dropout: 0.3
+encoder_type: brnn
+
