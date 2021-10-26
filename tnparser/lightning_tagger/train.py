@@ -14,6 +14,7 @@ import logging
 
 
 
+
 logging.basicConfig(level=logging.INFO)
 
 def all_labels(data):
@@ -57,25 +58,28 @@ def main(args):
         logging.info(f"Creating directory {args.checkpoint_dir}")
         os.makedirs(args.checkpoint_dir)
         
-        # create label encoder and model
-        logging.info(f"Fitting label encoder")
-        label_encoders = fit_label_encoders(train_data+eval_data, label_sets)
-        target_classes = {}
-        for label in label_sets:
-            target_classes[label] = len(label_encoders[label].classes_)
+    # create label encoder and model
+    logging.info(f"Fitting label encoder")
+    label_encoders = fit_label_encoders(train_data+eval_data, label_sets)
+    target_classes = {}
+    for label in label_sets:
+        target_classes[label] = len(label_encoders[label].classes_)
+      
+    logging.info(f"Saving label encoder into {os.path.join(args.checkpoint_dir, 'label_encoder.pickle')}")
+    with open(os.path.join(args.checkpoint_dir, "label_encoders.pickle"), "wb") as f:
+        pickle.dump(label_encoders, f)
         
-        logging.info(f"Saving label encoder into {os.path.join(args.checkpoint_dir, 'label_encoder.pickle')}")
-        with open(os.path.join(args.checkpoint_dir, "label_encoders.pickle"), "wb") as f:
-            pickle.dump(label_encoders, f)
+    logging.info(f"Creating model")
+    # initialize tagger model
+    model = TaggerModel(target_classes, pretrained_bert=args.pretrained_bert)
+    model.load_pretrained() # load pretrained bert weigths
         
-        logging.info(f"Creating model")
-        model = TaggerModel(pretrained_bert=args.bert_pretrained, target_classes=target_classes)
         
-    else:
-        logging.info(f"Loading model from {os.path.join(args.checkpoint_dir, 'best.ckpt')}")
-        with open(os.path.join(args.checkpoint_dir, "label_encoders.pickle"), "rb") as f:
-           label_encoders = pickle.load(f)
-        model = TaggerModel.load_from_checkpoint(os.path.join(args.checkpoint_dir, "best.ckpt"))
+#    else:
+#        logging.info(f"Loading model from {os.path.join(args.checkpoint_dir, 'best.ckpt')}")
+#        with open(os.path.join(args.checkpoint_dir, "label_encoders.pickle"), "rb") as f:
+#           label_encoders = pickle.load(f)
+#        model = TaggerModel.load_from_checkpoint(os.path.join(args.checkpoint_dir, "best.ckpt"))
         
 
     # create dataset
@@ -114,7 +118,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_data', type=str, default='data/train.conllu')
     parser.add_argument('--eval_data', type=str, default='data/dev.conllu')
-    parser.add_argument('--bert_pretrained', type=str, default='TurkuNLP/bert-base-finnish-cased-v1')
+    parser.add_argument('--pretrained_bert', type=str, default='TurkuNLP/bert-base-finnish-cased-v1')
     parser.add_argument('--batch_size', type=int, default=14)
     parser.add_argument('--epochs', type=int, default=8)
     parser.add_argument('--freeze_encoder', type=int, default=0, help="Freeze bert encoder weights for x epochs. (Default is 0, no freezing)")

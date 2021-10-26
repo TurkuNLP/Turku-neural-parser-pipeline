@@ -23,7 +23,7 @@ def load_model(args):
     target_classes = {}
     for label in label_encoders.keys():
         target_classes[label] = len(label_encoders[label].classes_)
-    model = TaggerModel.load_from_checkpoint(pretrained_bert=args.bert_pretrained, target_classes=target_classes, checkpoint_path=os.path.join(args.checkpoint_dir, "best.ckpt"))
+    model = TaggerModel.load_from_checkpoint(target_classes=target_classes, checkpoint_path=os.path.join(args.checkpoint_dir, "best.ckpt"))
     model.freeze()
     model.eval()
     if torch.cuda.is_available():
@@ -85,7 +85,6 @@ def launch(args, q_in, q_out):
     
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--bert_pretrained', type=str, default='TurkuNLP/bert-base-finnish-cased-v1')
 argparser.add_argument('--batch_size', type=int, default=16)
 argparser.add_argument('--checkpoint_dir', default="checkpoints", type=str)
 

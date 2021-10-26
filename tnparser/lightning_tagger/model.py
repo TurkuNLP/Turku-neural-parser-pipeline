@@ -38,13 +38,18 @@ class TaggerOutput(pl.LightningModule):
 
 class TaggerModel(pl.LightningModule):
 
-    def __init__(self, pretrained_bert = None, target_classes = {}, steps_train=None, weights=None):
+    def __init__(self, target_classes, **kwargs):
         super().__init__()
-        self.steps_train = steps_train
+        self.save_hyperparameters() # save kwargs during training
+        
         self.target_classes = target_classes # key: name of the target layer, value: number of classes for the target
-        self.weights = weights
-        self.bert = transformers.BertModel.from_pretrained(pretrained_bert, output_hidden_states=True, return_dict=True)
-        self.tokenizer = transformers.BertTokenizerFast.from_pretrained(pretrained_bert)
+        
+        self.pretrained_bert = kwargs.pop("pretrained_bert", None)
+        logging.info(f"Initializing tagger model with {self.pretrained_bert}")
+        
+        bert_config = transformers.AutoConfig.from_pretrained(self.pretrained_bert)
+        self.bert = transformers.AutoModel.from_config(bert_config)
+        self.tokenizer = transformers.BertTokenizerFast.from_pretrained(self.pretrained_bert)
                                                            
         # layers for different label_sets (upos, feats ...)
         self.prediction_layers = torch.nn.ModuleDict()
@@ -56,6 +61,10 @@ class TaggerModel(pl.LightningModule):
 
             self.accuracies[target_name] = torchmetrics.Accuracy()
             self.val_accuracies[target_name] = torchmetrics.Accuracy()
+
+
+    def load_pretrained(self):
+        self.bert = transformers.BertModel.from_pretrained(self.pretrained_bert, output_hidden_states=True, return_dict=True)
 
     def forward(self, batch):
         outputs = self.bert(input_ids=batch['input_ids'],
