@@ -140,6 +140,9 @@ class TaggerDataModule(pl.LightningDataModule):
         subwords = [] # list of words where a word is list of subwords
         for token in tokens:
             subwords_ = self.tokenizer.tokenize(token)
+            if len(subwords_) == 0:
+                logging.info(f"Warning! Replacing empty subwords with [UNK]: {token} {repr(token)}")
+                subwords_ = ["[UNK]"]
             ids_ = self.tokenizer.convert_tokens_to_ids(subwords_)
             subwords.append(ids_)
 

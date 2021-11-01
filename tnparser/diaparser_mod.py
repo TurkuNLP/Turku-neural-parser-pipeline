@@ -79,6 +79,7 @@ def launch(args, q_in, q_out):
         except:
             traceback.print_exc()
             sys.stderr.flush()
+            raise
             
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--model", type=str, help="The model file")

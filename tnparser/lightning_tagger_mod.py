@@ -82,6 +82,7 @@ def launch(args, q_in, q_out):
         except:
             traceback.print_exc()
             sys.stderr.flush()
+            raise
     
 
 argparser = argparse.ArgumentParser()
