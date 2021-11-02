@@ -98,9 +98,9 @@ def merge(sentences):
 def split(sent,tokenizer,max_seq_len):
     new_sentences=[[]]
     text=list(row[FORM] for row in sent) #tokens
-    bert_tokenized=tokenizer(text,add_special_tokens=False)
+    bert_tokenized=[tokenizer.tokenize(t) for t in text]
     counter=0
-    for sent_row, token_tokenized in zip(sent,bert_tokenized["input_ids"]):
+    for sent_row, token_tokenized in zip(sent,bert_tokenized):
         if len(token_tokenized)>max_seq_len: #we have a problem, the token itself is too long
             for chunk in grouper(sent_row[FORM],max_seq_len,""): #cut the token into individual "sentences"
                 new_sentences.append([[1,"".join(chunk)]+["_"]*8])
