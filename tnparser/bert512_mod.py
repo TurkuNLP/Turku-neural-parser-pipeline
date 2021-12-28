@@ -1,4 +1,6 @@
+import sys
 import transformers
+import itertools
 import argparse
 
 ID,FORM,LEMMA,UPOS,XPOS,FEAT,HEAD,DEPREL,DEPS,MISC=range(10)
@@ -65,7 +67,7 @@ def grouper(iterable, n, fillvalue=None):
     "Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
-    return zip_longest(*args, fillvalue=fillvalue)
+    return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
 
@@ -102,8 +104,9 @@ def split(sent,tokenizer,max_seq_len):
     counter=0
     for sent_row, token_tokenized in zip(sent,bert_tokenized):
         if len(token_tokenized)>max_seq_len: #we have a problem, the token itself is too long
+            #print(f"LONGT >>>>{repr(sent_row[FORM])}<<<<<<<",file=sys.stderr,flush=True)
             for chunk in grouper(sent_row[FORM],max_seq_len,""): #cut the token into individual "sentences"
-                new_sentences.append([[1,"".join(chunk)]+["_"]*8])
+                new_sentences.append([["1","".join(chunk)]+["_"]*8])
             counter=0
             continue
         if "-" in sent_row[ID]:
@@ -118,8 +121,11 @@ def split(sent,tokenizer,max_seq_len):
             counter=0
         new_sentences[-1].append(sent_row)
         counter+=len(token_tokenized)
+    #print(new_sentences)
     #Now make sure all tokens are correctly numbered
     for sent in new_sentences:
+        if not sent:
+            continue
         first_tok=int(sent[0][ID].split("-")[0])-1 #this much needs to be substracted
         for row in sent:
             parts=row[ID].split("-")
