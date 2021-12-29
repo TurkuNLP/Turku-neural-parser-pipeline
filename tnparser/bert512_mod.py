@@ -2,6 +2,7 @@ import sys
 import transformers
 import itertools
 import argparse
+import re
 
 ID,FORM,LEMMA,UPOS,XPOS,FEAT,HEAD,DEPREL,DEPS,MISC=range(10)
 
@@ -75,6 +76,15 @@ def merge(sentences):
     current_comments=[]
     current_sent=None
     for comments,sent in sentences:
+        for row in sent:
+            if "BERT512TRUNCATEDTOKEN_ORIG=" in row[MISC]:
+                match=re.search(r"\|?BERT512TRUNCATEDTOKEN_ORIG=(.*)=GIRO_NEKOT",row[MISC])
+                if not match:
+                    print("MISC:",row[MISC],file=sys.stderr)
+                row[FORM]=match.group(1)
+                row[MISC]=row[MISC][:match.start()]+row[MISC][match.end():]
+                if not row[MISC]:
+                    row[MISC]="_"
         if comments==["### TNPP MERGE INTO PREVIOUS"]:
             # this one needs to be merged into previous
             offset=int(current_sent[-1][ID]) #this much needs to be added everywhere
@@ -104,10 +114,13 @@ def split(sent,tokenizer,max_seq_len):
     counter=0
     for sent_row, token_tokenized in zip(sent,bert_tokenized):
         if len(token_tokenized)>max_seq_len: #we have a problem, the token itself is too long
-            #print(f"LONGT >>>>{repr(sent_row[FORM])}<<<<<<<",file=sys.stderr,flush=True)
-            for chunk in grouper(sent_row[FORM],max_seq_len,""): #cut the token into individual "sentences"
-                new_sentences.append([["1","".join(chunk)]+["_"]*8])
-            counter=0
+            if sent_row[MISC]=="_":
+                sent_row[MISC]="BERT512TRUNCATEDTOKEN_ORIG="+sent_row[FORM]+"=GIRO_NEKOT"
+            else:
+                sent_row[MISC]=sent_row[MISC]+"|BERT512TRUNCATEDTOKEN_ORIG="+sent_row[FORM]+"=GIRO_NEKOT"
+            sent_row[FORM]=sent_row[FORM][:15]
+            counter+=15
+            new_sentences[-1].append(sent_row)
             continue
         if "-" in sent_row[ID]:
             #Now we need to make sure we still fit with all parts
@@ -115,6 +128,7 @@ def split(sent,tokenizer,max_seq_len):
                 new_sentences.append([])
                 counter=0
             new_sentences[-1].append(sent_row)
+            counter+=len(token_tokenized)
             continue
         if counter+len(token_tokenized)>max_seq_len:
             new_sentences.append([])
@@ -131,6 +145,13 @@ def split(sent,tokenizer,max_seq_len):
             parts=row[ID].split("-")
             parts="-".join((str(int(p)-first_tok) for p in parts)) #substract from everything
             row[ID]=parts
+            
+        # toks=[]
+        # for row in sent:
+        #     toks.append(tokenizer.tokenize(row[FORM]))
+        # if sum(len(t) for t in toks)>512:
+        #     print("CRASH",sent,file=sys.stderr)
+        #     sys.exit(-1)
     return new_sentences
 
 argparser = argparse.ArgumentParser()
