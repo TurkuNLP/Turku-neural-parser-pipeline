@@ -1,4 +1,5 @@
 import os.path
+import json
 import sys
 import io
 import argparse
@@ -71,7 +72,11 @@ def launch(args, q_in, q_out):
             return
         try:
             comments,sents,dset=conllu2dataset(txt)
-            predicted=parser.predict(dset,batch_size=1000)
+            try:
+                predicted=parser.predict(dset,batch_size=1000)
+            except:
+                print("This batch has caused an exception. Here it is json-encoded:",json.dumps(sents,ensure_ascii=False),file=sys.stderr)
+                raise
             res=[]
             for comm,sent,parser_out in zip(comments,sents,predicted.sentences):
                 res.append(merge(comm,sent,parser_out))

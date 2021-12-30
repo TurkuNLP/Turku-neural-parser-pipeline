@@ -82,6 +82,7 @@ def merge(sentences):
                 if not match:
                     print("MISC:",row[MISC],file=sys.stderr)
                 row[FORM]=match.group(1)
+                row[LEMMA]=row[FORM]
                 row[MISC]=row[MISC][:match.start()]+row[MISC][match.end():]
                 if not row[MISC]:
                     row[MISC]="_"
@@ -113,13 +114,13 @@ def split(sent,tokenizer,max_seq_len):
     bert_tokenized=[tokenizer.tokenize(t) for t in text]
     counter=0
     for sent_row, token_tokenized in zip(sent,bert_tokenized):
-        if len(token_tokenized)>max_seq_len: #we have a problem, the token itself is too long
+        if len(token_tokenized)>max_seq_len or token_tokenized==['[UNK]']: #we have a problem, the token itself is too long or weird in some manner
             if sent_row[MISC]=="_":
                 sent_row[MISC]="BERT512TRUNCATEDTOKEN_ORIG="+sent_row[FORM]+"=GIRO_NEKOT"
             else:
                 sent_row[MISC]=sent_row[MISC]+"|BERT512TRUNCATEDTOKEN_ORIG="+sent_row[FORM]+"=GIRO_NEKOT"
             sent_row[FORM]=sent_row[FORM][:15]
-            counter+=15
+            counter+=len(sent_row[FORM])
             new_sentences[-1].append(sent_row)
             continue
         if "-" in sent_row[ID]:
@@ -151,7 +152,7 @@ def split(sent,tokenizer,max_seq_len):
         #     toks.append(tokenizer.tokenize(row[FORM]))
         # if sum(len(t) for t in toks)>512:
         #     print("CRASH",sent,file=sys.stderr)
-        #     sys.exit(-1)
+        #     raise ValueError(sent)
     return new_sentences
 
 argparser = argparse.ArgumentParser()
