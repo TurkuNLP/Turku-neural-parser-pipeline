@@ -1,42 +1,46 @@
 parse_plaintext:
   - tokenizer_udpipe_mod --model {thisdir}/Tokenizer/tokenizer.udpipe
-  - bert512_mod --vocabfile BERT-TOKENIZER-NAME --max 400
+  - bert512_mod --vocabfile BERT-MODEL-NAME --max 400
   - diaparser_mod --model {thisdir}/Diaparser/diaparser.model
-  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16 --bert_pretrained BERT-MODEL-NAME
+  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16
+  - lemma_cache_mod --lemma_cache {thisdir}/Lemmatizer/lemma_cache.tsv
   - lemmatizer_mod --model {thisdir}/Lemmatizer/lemmatizer.pt
   - bert512_mod --merge
 
 parse_sentlines:
   - tokenizer_udpipe_mod --model {thisdir}/Tokenizer/tokenizer.udpipe --presegmented
-  - bert512_mod --vocabfile BERT-TOKENIZER-NAME --max 400
+  - bert512_mod --vocabfile BERT-MODEL-NAME --max 400
   - diaparser_mod --model {thisdir}/Diaparser/diaparser.model
-  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16 --bert_pretrained BERT-MODEL-NAME
+  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16
+  - lemma_cache_mod --lemma_cache {thisdir}/Lemmatizer/lemma_cache.tsv
   - lemmatizer_mod --model {thisdir}/Lemmatizer/lemmatizer.pt
   - bert512_mod --merge
 
 parse_wslines:
   - wstokenizer_mod
-  - bert512_mod --vocabfile BERT-TOKENIZER-NAME --max 400
+  - bert512_mod --vocabfile BERT-MODEL-NAME --max 400
   - diaparser_mod --model {thisdir}/Diaparser/diaparser.model
-  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16 --bert_pretrained BERT-MODEL-NAME
+  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16
+  - lemma_cache_mod --lemma_cache {thisdir}/Lemmatizer/lemma_cache.tsv
   - lemmatizer_mod --model {thisdir}/Lemmatizer/lemmatizer.pt
   - bert512_mod --merge
 
 parse_conllu:
   - extraoptions --empty-line-batching
   - wipe_mod
-  - bert512_mod --vocabfile BERT-TOKENIZER-NAME --max 400
+  - bert512_mod --vocabfile BERT-MODEL-NAME --max 400
   - diaparser_mod --model {thisdir}/Diaparser/diaparser.model
-  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16 --bert_pretrained BERT-MODEL-NAME
+  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16
+  - lemma_cache_mod --lemma_cache {thisdir}/Lemmatizer/lemma_cache.tsv
   - lemmatizer_mod --model {thisdir}/Lemmatizer/lemmatizer.pt
   - bert512_mod --merge
   
 parse_conllu_nolemmas:
   - extraoptions --empty-line-batching
   - wipe_mod
-  - bert512_mod --vocabfile BERT-TOKENIZER-NAME --max 400
+  - bert512_mod --vocabfile BERT-MODEL-NAME --max 400
   - diaparser_mod --model {thisdir}/Diaparser/diaparser.model
-  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16 --bert_pretrained BERT-MODEL-NAME
+  - lightning_tagger_mod --checkpoint_dir {thisdir}/Tagger --batch_size 16
   - bert512_mod --merge
 
 tokenize:
