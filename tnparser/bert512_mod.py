@@ -112,14 +112,17 @@ def split(sent,tokenizer,max_seq_len):
     new_sentences=[[]]
     text=list(row[FORM] for row in sent) #tokens
     bert_tokenized=[tokenizer.tokenize(t) for t in text]
-    counter=0
+    counter=0        
     for sent_row, token_tokenized in zip(sent,bert_tokenized):
-        if len(token_tokenized)>max_seq_len or token_tokenized==['[UNK]']: #we have a problem, the token itself is too long or weird in some manner
+        if len(token_tokenized)>max_seq_len or len(token_tokenized)==0 or token_tokenized==['[UNK]']: #we have a problem, the token itself is too long or weird in some manner
             if sent_row[MISC]=="_":
                 sent_row[MISC]="BERT512TRUNCATEDTOKEN_ORIG="+sent_row[FORM]+"=GIRO_NEKOT"
             else:
                 sent_row[MISC]=sent_row[MISC]+"|BERT512TRUNCATEDTOKEN_ORIG="+sent_row[FORM]+"=GIRO_NEKOT"
             sent_row[FORM]=sent_row[FORM][:15]
+            if counter+len(sent_row[FORM])>max_seq_len:
+                new_sentences.append([])
+                counter=0
             counter+=len(sent_row[FORM])
             new_sentences[-1].append(sent_row)
             continue
@@ -157,6 +160,6 @@ def split(sent,tokenizer,max_seq_len):
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--vocabfile", help="Vocab file of the BERT model to use")
-argparser.add_argument("--max-seq-len", type=int, default=500, help="Max seq length to use, default %(default)d")
+argparser.add_argument("--max-seq-len", type=int, default=400, help="Max seq length to use, default %(default)d")
 argparser.add_argument("--merge", action="store_true", help="Undo the transform. Without this parameter, it will run the transform, splitting sentences to max-seq-len pieces")
 
