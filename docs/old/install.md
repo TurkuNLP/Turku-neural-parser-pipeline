@@ -53,7 +53,7 @@ GPU install you would select something like "Linux - pip - 3.5 - CUDA 9.1" match
 
 ## Download the models
 
-All models are available [here](http://bionlp-www.utu.fi/dep-parser-models) and you can use the following utility script to fetch the model you need:
+All models are available [here](http://epsilon-it.utu.fi/dep-parser-models/) and you can use the following utility script to fetch the model you need:
 
     python3 fetch_models.py fi_tdt
 
