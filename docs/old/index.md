@@ -60,7 +60,7 @@ Training new models is described [here](training.html)
 
 # Models
 
-See all available models [here](models.html)
+See all available models [here](http://epsilon-it.utu.fi/dep-parser-models/)
 
 The 82 models for all languages in the CoNLL-18 Shared Task are available for download. Follow the instructions [here](install.html#download-the-models) to download a specific model to a local installation of the parser or [here](docker.html#images-for-other-languages) for the Docker version of the parser.
 
