@@ -9,7 +9,7 @@ if __name__=="__main__":
     parser.add_argument('modelname', help='which model to grab')
     args = parser.parse_args()
 
-    zip_file_url="http://bionlp-www.utu.fi/dep-parser-models/models_{}.tgz".format(args.modelname)
+    zip_file_url="http://epsilon-it.utu.fi/dep-parser-models/models_{}.tgz".format(args.modelname)
 
     print("Downloading from {} and unpacking".format(args.modelname))
     
