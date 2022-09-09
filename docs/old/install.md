@@ -16,6 +16,7 @@ Clone the parser as well as all of its submodules as follows:
 
     git clone https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
     cd Turku-neural-parser-pipeline
+    git checkout orig-parser-pre-2021
     git submodule update --init --recursive
 
 ## Setup Python environment
