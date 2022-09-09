@@ -83,6 +83,7 @@ Build the Docker image like so:
 
     git clone https://github.com/TurkuNLP/Turku-neural-parser-pipeline.git
     cd Turku-neural-parser-pipeline
+    git checkout orig-parser-pre-2021
     docker build -t "my_french_parser" --build-arg models=fr_gsd --build-arg hardware=cpu -f Dockerfile-lang .
 
 And then you can parse French like so:
