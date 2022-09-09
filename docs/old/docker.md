@@ -77,7 +77,7 @@ curl --request POST --header 'Content-Type: text/plain; charset=utf-8' --data-bi
 
 # Images for other languages
 
-Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://bionlp-www.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline. The `hardware` build parameter controls whether you want a `gpu` or `cpu` image.
+Building a language-specific image is straightforward. For this you need to choose one of the available language models from [here](http://epsilon-it.utu.fi/dep-parser-models/). These models refer to the various treebanks available at [UniversalDependencies](https://universaldependencies.org). Let us choose French and the GSD treebank model. That means the model name is `fr_gsd` and to parse plain text documents you would use the `parse_plaintext` pipeline. The `hardware` build parameter controls whether you want a `gpu` or `cpu` image.
 
 Build the Docker image like so:
 
