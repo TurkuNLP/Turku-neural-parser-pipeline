@@ -11,7 +11,7 @@ Looking for the **old version** of the parser (prior to August 2021)? The code i
 <div class="latest" markdown="1">
 LATEST:
 
-**May, 2024**: **Turku Neural Parser Pipeline no longer maintained** Thanks to all the many users, we had fun! But now it's time to retire this venerable TurkuNLP project because world has moved forward and newer parsers are easier to run. We warmly suggest the use of [Trankit](https://github.com/nlp-uoregon/trankit) as a good replacement of TNPP.
+**May, 2024**: **Turku Neural Parser Pipeline no longer maintained** Thanks to all the many users, we had fun! But now it's time to retire this venerable TurkuNLP project because world has moved forward and newer parsers are easier to run. We warmly suggest the use of [Trankit](https://github.com/nlp-uoregon/trankit) with the *Finnish-TDT* model as a good alternative to TNPP for Finnish. The *Finnish-TDT* model uses the same TurkuNLP -originated training treebank as the neural parser pipeline used to.
 
 **June, 2021**: **Complete overhaul** 1) restructured as a python package, 2) Udify replaced with diaparser, 3) new tagger; A lot more sane requirements.txt. Old version of this page with all documentation is [here](old/index.html).
     
